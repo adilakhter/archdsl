@@ -88,4 +88,7 @@ interface IChatEvents;
 It generates a similar xADL description as above and the Java files (targeted specially for the Myx Framework) required for this architecture. 
 
 _TODO : more details_
- 
+
+### To Build 
+
+To build the archDSL compiler you will need a recent version of Eclipse (3.5+) and Spoofax. When those are installed, simply clone the archDSL repository and import it into Eclipse, then build the project (Ctrl+Alt+b or Ctrl+Cmd+b). 
