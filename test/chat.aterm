@@ -1,0 +1,36 @@
+Application(
+  []
+, [ InterfaceDef("IChat", None())
+  , InterfaceDef("IChatEv", None())
+  , ComponentDef(
+      "ChatServer"
+    , None()
+    , []
+    , [ EndPointDef(None(), Incoming(), "IChat", "chat")
+      , EndPointDef(None(), Outgoing(), "IChatEv", "out")
+      ]
+    )
+  , ComponentDef(
+      "ChatClient"
+    , None()
+    , []
+    , [ EndPointDef(None(), Outgoing(), "IChat", "chat")
+      , EndPointDef(None(), Incoming(), "IChatEv", "in")
+      ]
+    )
+  , ArchitectureDef(
+      "ChatApplication"
+    , [ Component("ChatServer", "server")
+      , Component("ChatClient", "client1")
+      , Component("ChatClient", "client2")
+      , Component("ChatClient", "client3")
+      , Link(EndPoint("server", "chat"), EndPoint("client1", "chat"))
+      , Link(EndPoint("server", "chat"), EndPoint("client2", "chat"))
+      , Link(EndPoint("server", "chat"), EndPoint("client3", "chat"))
+      , Link(EndPoint("server", "out"), EndPoint("client1", "in"))
+      , Link(EndPoint("server", "out"), EndPoint("client2", "in"))
+      , Link(EndPoint("server", "out"), EndPoint("client3", "in"))
+      ]
+    )
+  ]
+)

@@ -1,0 +1,31 @@
+module generate-java-endpoint
+
+imports
+     libstratego-lib
+     libstratego-gpp
+     libstratego-aterm 
+     include/ArchDSL
+     generate-java-common
+     generate-java
+rules
+    // Inteface code generation 
+    to-java-entities-string : 
+          InterfaceDef (name, None()) 
+          -> 
+          $[package [package-name-string];
+          
+          public interface [className]
+          {
+            // Add Operations here
+          }
+          ]
+      where
+            (package-name-parts-temp, className) :=   <string-tokenize(|['.']);split-init-last>name
+      where 
+            if (<eq> (package-name-parts-temp, [])) then
+                package-name-parts:= [<get-base-namespace>]
+            else 
+                package-name-parts:= package-name-parts-temp
+            end 
+      where package-name-string := <separate-by(|".");concat-strings>package-name-parts
+     

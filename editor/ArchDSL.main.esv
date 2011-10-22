@@ -1,0 +1,16 @@
+module ArchDSL.main
+
+imports ArchDSL-Builders ArchDSL-Colorer ArchDSL-Completions ArchDSL-Folding ArchDSL-Outliner ArchDSL-References ArchDSL-Syntax
+
+language General properties
+                  
+  name          : ArchDSL
+  id            : ArchDSL
+  extends       : Root
+                  
+  description   : "Spoofax/IMP-generated editor for the ArchDSL language"
+  url           : http://strategoxt.org
+                  
+  extensions    : arch
+  table         : include/ArchDSL.tbl
+  start symbols : Start

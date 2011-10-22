@@ -1,0 +1,14 @@
+architecture A1{
+	subarchitecture A2 sarch;
+	
+	component C comp;
+	
+	link sarch.ext comp.interf;
+	link comp.interf comp.interf;
+}
+
+architecture A2{
+	component X xcomp;
+	
+	incoming endpoint xcomp.interf ext;
+}

@@ -1,0 +1,42 @@
+module check
+
+imports
+  libstratego-lib
+  include/ArchDSL
+  lib/editor-common.generated
+
+//rules
+ // analyze: t -> t
+  //  with <topdown(try(record-def))> t
+
+  //record-def:ComponentDef(name, endpoints*) -> ComponentDef(name,  endpoints*)
+  //	with rules(GetComponentDef :+ name -> name)
+  	
+  //record-def: AdapterDef(name, endpoints*) -> AdapterDef(name, endpoints*)
+  //	with rules(GetAdapterDef :+ name -> name)
+      
+//rules
+    
+  // Reports an error if a property type is undefined.
+  // This error is reported on the type name 'type'.
+  //constraint-error:
+  //  Property(x, Type(type)) -> (type, $[Type [type] is not defined])
+  //  where
+  //    not(!type => "String"); // String and Int are built-in types
+  //    not(!type => "Int");
+  //    not(<GetEntity> type) // no entity for this type
+  
+  //constraint-error: ComponentDef(name, _) -> (name, $[Multiple definitions of the [name] component])
+  //  where not(<bagof-GetComponentDef> name => [_])
+  
+  //constraint-error: AdapterDef(name, _) -> (name, $[Multiple definitions of the [name] adapter])
+  //  where not(<bagof-GetAdapterDef> name => [_])
+  
+  //constraint-warning: _ -> []
+ //   Entity(x, _) -> (x, $[Entity names must start with a capital])
+  //  where
+ //     not(<explode-string; Hd; is-upper> x)
+  
+  //constraint-note: _ -> []
+  //  Module(x @ "example", _) -> (x, $[This is just an example program in the "entities" language
+  //                                    (this note is defined in trans/check.str) ])

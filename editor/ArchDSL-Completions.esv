@@ -1,0 +1,22 @@
+module ArchDSL-Completions
+
+imports ArchDSL-Completions.generated
+
+completions
+                                                                   
+  // This file is used to define content completion.               
+  //                                                               
+  // See the imported file for a brief introduction and examples.  
+                                                                   
+
+completions
+                                         
+  // Syntax completion:                  
+  completion template                  : "component " <name> " using " <class> " {}" (blank)
+  completion template                  : "adapter " <name> " using " <class> " {}" (blank)
+  completion template                  : "interface " <name> " using " <class> " {}"  (blank)
+  completion template                  : "architecture " <name> " {}" (blank)
+                                         
+  // Semantic (identifier) completion:   
+  //completion proposer                  : editor-complete
+  //completion trigger                   : ": "

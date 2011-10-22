@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?> 
+<instance:xArch 
+	xmlns:instance="http://www.ics.uci.edu/pub/arch/xArch/instance.xsd" 
+	xmlns:implementation="http://www.ics.uci.edu/pub/arch/xArch/implementation.xsd" 
+	xmlns:javaimplementation="http://www.ics.uci.edu/pub/arch/xArch/javaimplementation.xsd" 
+	xmlns:javainitparams="http://www.ics.uci.edu/pub/arch/xArch/javainitparams.xsd" 
+	xmlns:lookupimplementation="http://www.ics.uci.edu/pub/arch/xArch/lookupimplementation.xsd" 
+	xmlns:types="http://www.ics.uci.edu/pub/arch/xArch/types.xsd" 
+	xmlns:xlink="http://www.w3.org/1999/xlink" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.ics.uci.edu/pub/arch/xArch/instance.xsd http://www.isr.uci.edu/projects/xarchuci/core/instance.xsd http://www.isr.uci.edu/projects/xarchuci/ext/activitydiagrams.xsd http://www.ics.uci.edu/pub/arch/xArch/changesets.xsd http://www.isr.uci.edu/projects/xarchuci/ext/changesets.xsd http://www.ics.uci.edu/pub/arch/xArch/analysis.xsd http://www.ics.uci.edu/pub/arch/xArch/lookupimplementation.xsd http://www.isr.uci.edu/projects/xarchuci/ext/lookupimplementation.xsd http://www.ics.uci.edu/pub/arch/xArch/javainitparams.xsd http://www.isr.uci.edu/projects/xarchuci/ext/javainitparams.xsd http://www.ics.uci.edu/pub/arch/xArch/javaimplementation.xsd http://www.isr.uci.edu/projects/xarchuci/ext/javaimplementation.xsd http://www.ics.uci.edu/pub/arch/xArch/implementation.xsd http://www.isr.uci.edu/projects/xarchuci/ext/implementation.xsd http://www.ics.uci.edu/pub/arch/xArch/variants.xsd http://www.isr.uci.edu/projects/xarchuci/ext/variants.xsd http://www.ics.uci.edu/pub/arch/xArch/statecharts.xsd http://www.isr.uci.edu/projects/xarchuci/ext/statecharts.xsd http://www.ics.uci.edu/pub/arch/xArch/types.xsd http://www.isr.uci.edu/projects/xarchuci/ext/types.xsd">
+	<types:archTypes xsi:type="types:ArchTypes"><types:interfaceType types:id="interface-ICoreMessages" xsi:type="implementation:InterfaceTypeImpl">
+	                                            	<types:description xsi:type="instance:Description">ICoreMessages</types:description>
+	                                            	<implementation:implementation xsi:type="javaimplementation:JavaImplementation">
+	                                            		<javaimplementation:mainClass xsi:type="javaimplementation:JavaClassFile">
+	                                            			<javaimplementation:javaClassName xsi:type="javaimplementation:JavaClassName">ICoreMessages</javaimplementation:javaClassName> 
+	                                            		</javaimplementation:mainClass>
+	                                            	</implementation:implementation> 
+	                                            </types:interfaceType><types:interfaceType types:id="interface-ICoreCompMessages" xsi:type="implementation:InterfaceTypeImpl">
+	                                            	<types:description xsi:type="instance:Description">ICoreCompMessages</types:description>
+	                                            	<implementation:implementation xsi:type="javaimplementation:JavaImplementation">
+	                                            		<javaimplementation:mainClass xsi:type="javaimplementation:JavaClassFile">
+	                                            			<javaimplementation:javaClassName xsi:type="javaimplementation:JavaClassName">ICoreCompMessages</javaimplementation:javaClassName> 
+	                                            		</javaimplementation:mainClass>
+	                                            	</implementation:implementation> 
+	                                            </types:interfaceType><types:componentType types:id="component-C1" xsi:type="implementation:VariantComponentTypeImpl">
+	                                            	<types:description xsi:type="instance:Description">C1</types:description>
+	                                            	<implementation:implementation xsi:type="javaimplementation:JavaImplementation">
+	                                            		<javaimplementation:mainClass xsi:type="javaimplementation:JavaClassFile">
+	                                            			<javaimplementation:javaClassName xsi:type="javaimplementation:JavaClassName">C1</javaimplementation:javaClassName>
+	                                            			 
+	                                            		</javaimplementation:mainClass>
+	                                            	</implementation:implementation>
+	                                            	<types:signature types:id="signature-C1-messages" xsi:type="implementation:SignatureImpl">
+	                                            		<types:description xsi:type="instance:Description">messages</types:description>
+	                                            		<types:direction xsi:type="instance:Direction">in</types:direction>
+	                                            		<implementation:implementation xsi:type="lookupimplementation:LookupImplementation">
+	                                            			<lookupimplementation:name xsi:type="lookupimplementation:LookupName">messages</lookupimplementation:name> 
+	                                            		</implementation:implementation>
+	                                            		<types:type xlink:href="#interface-ICoreCompMessages" xlink:type="simple" xsi:type="instance:XMLLink" />
+	                                            	</types:signature>
+	                                            </types:componentType></types:archTypes>
+	<types:archStructure types:id="arch-core" xsi:type="types:ArchStructure">
+		<types:description xsi:type="instance:Description">core</types:description>
+		<types:component types:id="core-innerComp" xsi:type="types:Component">
+			<types:description xsi:type="instance:Description">innerComp</types:description>
+			<types:type xlink:href="#component-C1" xlink:type="simple" xsi:type="instance:XMLLink" />
+			<types:interface types:id="interface-core-innerComp-messages" xsi:type="types:Interface">
+				<types:description xsi:type="instance:Description">messages</types:description>
+				<types:direction xsi:type="instance:Direction">in</types:direction>
+				<types:type xlink:href="#interface-ICoreCompMessages" xlink:type="simple" xsi:type="instance:XMLLink" />
+				<types:signature xlink:href="#signature-C1-messages" xlink:type="simple" xsi:type="instance:XMLLink" />
+			</types:interface>
+		</types:component>
+		
+		
+	</types:archStructure>
+</instance:xArch>

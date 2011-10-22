@@ -1,0 +1,28 @@
+Application(
+  []
+, [ ComponentDef("Component1", None(), [], [])
+  , ArchitectureDef(
+      "multi"
+    , [ Component("Component1", "blabla")
+      , Subarchitecture("secondlevel.sub2", "subarch2")
+      , Subarchitecture("sub", "subarch")
+      , Subarchitecture("secondlevel.subsub2", "blabla2")
+      , Subarchitecture("secondlevel.thirdlevel.sub3", "blabla3")
+      ]
+    )
+  , ComponentDef("sub.Component2", None(), [], [])
+  , ArchitectureDef("sub.sub", [Component("sub.Component2", "comp2")])
+  , ComponentDef("secondlevel.sub2.ComponentLevel2", None(), [], [])
+  , ArchitectureDef(
+      "secondlevel.sub2.sub2"
+    , [Component("secondlevel.sub2.ComponentLevel2", "comp3"), Subarchitecture("sub3", "subarch2")]
+    )
+  , ComponentDef("secondlevel.subsub2.ComponentLevel2", None(), [], [])
+  , ArchitectureDef(
+      "secondlevel.subsub2.subsub2"
+    , [Component("secondlevel.subsub2.ComponentLevel2", "comp3"), Subarchitecture("sub3", "subarch2")]
+    )
+  , ComponentDef("secondlevel.thirdlevel.sub3.Component4", None(), [], [])
+  , ArchitectureDef("secondlevel.thirdlevel.sub3.sub3", [Component("secondlevel.thirdlevel.sub3.Component4", "comp4")])
+  ]
+)

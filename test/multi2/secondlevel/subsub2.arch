@@ -1,0 +1,11 @@
+include "thirdlevel/sub3";
+
+component ComponentLevel2{
+	
+}
+
+architecture subsub2{
+	component ComponentLevel2 comp3;
+	
+	subarchitecture sub3 subarch2;
+}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?eclipse version="3.0"?>
+
+<plugin>
+       <extension point="org.eclipse.imp.runtime.languageDescription">
+          <language extensions="arch" description="ArchDSL" language="ArchDSL" derivedFrom="DynamicRoot" validator="ArchDSL.ArchDSLValidator" validatorClass="ArchDSL.ArchDSLValidator"></language>
+       </extension>
+       <extension id="ArchDSL.parser" name="ArchDSL Parser" point="org.eclipse.imp.runtime.parser">
+          <parser class="ArchDSL.ArchDSLParseController" language="ArchDSL">
+          </parser>
+       </extension>    
+    </plugin>

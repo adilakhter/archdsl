@@ -1,0 +1,99 @@
+[ InterfaceDef("CS-IChat", None())
+, InterfaceDef("CS-IChatEvents", None())
+, ComponentDef(
+    "CS-ChatServer"
+  , None()
+  , [Param("ssss", "\"asgasgas\"")]
+  , [ EndPointDef(Some(Optional()), Incoming(), "CS-IChat", "chat")
+    , EndPointDef(None(), Outgoing(), "CS-IChatEvents", "chatEv")
+    ]
+  )
+, ComponentDef(
+    "CS-ChatClient"
+  , None()
+  , []
+  , [ EndPointDef(Some(Optional()), Outgoing(), "CS-IChat", "chat")
+    , EndPointDef(None(), Incoming(), "CS-IChatEvents", "chatEv")
+    ]
+  )
+, AdapterDef(
+    "CS-EventPump"
+  , None()
+  , []
+  , [ EndPointDef(None(), Incoming(), "CS-IChatEvents", "inEv")
+    , EndPointDef(None(), Outgoing(), "CS-IChatEvents", "outEv")
+    ]
+  )
+, AdapterDef(
+    "CS-EventPump1"
+  , None()
+  , []
+  , [ EndPointDef(None(), Incoming(), "CS-IChatEvents", "inEv")
+    , EndPointDef(None(), Outgoing(), "CS-IChatEvents", "outEv")
+    ]
+  )
+, ArchitectureDef(
+    "ChatApplication"
+  , [ Component("CS-ChatServer", "server")
+    , Component("CS-ChatClient", "client1")
+    , Component("CS-ChatClient", "client2")
+    , Subarchitecture("CS", "csArch")
+    , Adapter("CS-EventPump", "pump")
+    , Link(EndPoint("server", "chat"), EndPoint("client1", "chat"))
+    , Link(EndPoint("server", "chat"), EndPoint("client2", "chat"))
+    , Link(EndPoint("pump", "inEv"), EndPoint("server", "chatEv"))
+    , Link(EndPoint("pump", "outEv"), EndPoint("client1", "chatEv"))
+    , Link(EndPoint("client2", "chatEv"), EndPoint("pump", "outEv"))
+    ]
+  )
+, ArchitectureDef(
+    "CS"
+  , [ Component("CS-Server", "srv")
+    , Component("CS-Client", "clnt")
+    , Link(EndPoint("srv", "interface"), EndPoint("clnt", "interface"))
+    ]
+  )
+, ArchitectureDef(
+    "A1"
+  , [ Subarchitecture("A2", "sarch")
+    , Component("A2-C", "comp")
+    , Link(EndPoint("sarch", "ext"), EndPoint("comp", "interf"))
+    , Link(EndPoint("comp", "interf"), EndPoint("comp", "interf"))
+    ]
+  )
+, ArchitectureDef(
+    "A2"
+  , [ Component("A2-X", "xcomp")
+    , ArchEndpointDef(None(), Incoming(), EndPoint("xcomp", "interf"), "ext")
+    ]
+  )
+, InterfaceDef("ChatApplication1-IChat", Some(BuiltInClass("java.lang")))
+, InterfaceDef("ChatApplication1-IChatEvents", Some(BuiltInClass("java.lang")))
+, ComponentDef(
+    "ChatApplication1-ChatServer"
+  , Some(BuiltInClass("java.lang"))
+  , []
+  , [ EndPointDef(Some(Optional()), Incoming(), "ChatApplication1-IChat", "chat")
+    , EndPointDef(None(), Outgoing(), "ChatApplication1-IChatEvents", "chatEv")
+    ]
+  )
+, ComponentDef(
+    "ChatApplication1-ChatClient"
+  , None()
+  , []
+  , [ EndPointDef(Some(Optional()), Outgoing(), "ChatApplication1-IChat", "chat")
+    , EndPointDef(None(), Incoming(), "ChatApplication1-IChatEvents", "chatEv")
+    ]
+  )
+, ArchitectureDef(
+    "ChatApplication1"
+  , [ Component("ChatApplication1-ChatServer", "server")
+    , Component("ChatApplication1-ChatClient", "client1")
+    , Component("ChatApplication1-ChatClient", "client2")
+    , Link(EndPoint("server", "chat"), EndPoint("client1", "chat"))
+    , Link(EndPoint("server", "chat"), EndPoint("client2", "chat"))
+    , Link(EndPoint("client1", "chatEv"), EndPoint("server", "chatEv"))
+    , Link(EndPoint("client2", "chatEv"), EndPoint("server", "chatEv"))
+    ]
+  )
+]

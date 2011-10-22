@@ -1,0 +1,53 @@
+module transform-mergefiles
+
+imports 
+	include/ArchDSL
+	trans/transform-namespace
+	lib/editor-common.generated
+	shared/path
+	trans/resolve-includes
+strategies
+  transform-mergefiles:
+    (selected, position, ast, path, project-path) -> result-string
+    with
+      filename := <guarantee-extension(|"temp")> path;
+      result-string := <transform-mergefiles> (path, selected)
+	
+  transform-mergefiles: (path, app@Application(includes*, parts*)) -> 
+  						Application([], <flatten-list>[parts*, <map(get-merge-content)>includePaths*])
+  	where includePaths* := <build-include-file-list>path
+			
+
+		
+  //transform-mergefiles(|parentNsp, baseDir): app@Application(includes*, parts*) -> 
+  //								  <concat; flatten-list>[appNamespace, resolvedIncludes]
+  //	with appNamespace := <transform-namespace(|parentNsp); remove-application-nodes>app;
+//		 resolvedIncludes := <map(transform-mergefiles(|parentNsp, baseDir))>includes*
+  
+  //transform-mergefiles(|parentNsp, baseDir): Include(fileName) -> 
+  //								  <transform-subarchitecture; remove-application-nodes>Application([], 
+  //								  <debug(!1); parse-file; 
+  //								   transform-mergefiles(|<dirname; 
+  //								   						  string-tokenize(|['/','\']); 
+  //								   						  last; 
+  //								   						  (create-parent-namespace-folder(|parentNsp) <+ get-old-folder(|parentNsp))
+  //								   						 >fullPath, 
+  //								  						 <dirname>fullPath)
+  //								  >fullPath)
+  //	with fullPath := <create-path(|baseDir)>fileName
+
+rules
+	get-merge-content: fileName -> <get-merge-content(|parentNamespace)>parsedContent
+		where parsedContent := <parse-file>fileName;
+			  parentNamespace :=  <path-to-namespace>fileName
+	
+	get-merge-content(|parent-namespace): app@Application(_, _) -> <transform-namespace(|parent-namespace); remove-application-node>app
+	
+	remove-application-node: Application(_, parts) -> 
+	 						  parts
+	 						   
+    create-parent-namespace-folder(|old): newNsp -> 
+     									   $[[old][newNsp].] 
+		where <not(eq)>(old, $[[newNsp].])
+			  
+	get-old-folder(|old): _ -> old

@@ -1,0 +1,18 @@
+Application(
+  None()
+, [ InterfaceDef("core.ICoreMessages", None())
+  , InterfaceDef("core.ICoreCompMessages", None())
+  , ComponentDef(
+      "core.C1"
+    , None()
+    , []
+    , [EndPointDef(None(), Incoming(), "core.ICoreCompMessages", "messages")]
+    )
+  , ArchitectureDef(
+      "core"
+    , [ Component("core.C1", "innerComp")
+      , ArchEndpointDef(None(), Incoming(), EndPoint("innerComp", "messages"), "messages")
+      ]
+    )
+  ]
+)

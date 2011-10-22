@@ -1,0 +1,17 @@
+Application(
+  []
+, [ InterfaceDef("IMessageAdapter", None())
+  , ComponentDef(
+      "AdapterCore"
+    , None()
+    , []
+    , [EndPointDef(None(), Outgoing(), "IMessageAdapter", "adapterOut")]
+    )
+  , ArchitectureDef(
+      "restadapter"
+    , [ Component("AdapterCore", "innerComp")
+      , ArchEndpointDef(None(), Outgoing(), EndPoint("innerComp", "adapterOut"), "adpOust")
+      ]
+    )
+  ]
+)

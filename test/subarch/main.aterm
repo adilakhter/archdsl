@@ -1,0 +1,30 @@
+Application(
+  [Include("\"core\""), Include("\"restadapter\"")]
+, [ InterfaceDef("IMessageDispatcher", None())
+  , InterfaceDef("IMessageAdapter", None())
+  , ComponentDef(
+      "MessageDispatcher"
+    , None()
+    , []
+    , [EndPointDef(None(), Outgoing(), "IMessageDispatcher", "disp")]
+    )
+  , ComponentDef(
+      "MessageAdapter"
+    , None()
+    , []
+    , [ EndPointDef(None(), Incoming(), "IMessageAdapter", "adapterIn")
+      , EndPointDef(None(), Outgoing(), "IMessageAdapter", "adapterOut")
+      ]
+    )
+  , ArchitectureDef(
+      "main"
+    , [ Component("MessageDispatcher", "msgDisp")
+      , Component("MessageAdapter", "adapter")
+      , Subarchitecture("core", "coreComp")
+      , Subarchitecture("restadapter", "restAdapter")
+      , Link(EndPoint("coreComp", "messages"), EndPoint("msgDisp", "disp"))
+      , Link(EndPoint("restAdapter", "adpOut"), EndPoint("adapter", "adapterOut"))
+      ]
+    )
+  ]
+)

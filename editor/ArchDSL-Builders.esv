@@ -1,0 +1,23 @@
+
+module ArchDSL-Builders
+
+imports 
+	ArchDSL-Builders.generated
+
+builders
+                                                                      
+  // This file can be used for custom analysis and builder rules.     
+  //                                                                  
+  // See the imported file for a brief introduction and examples.     
+
+builders
+                                                                                                               
+  provider                  : include/archdsl.ctree                                                            
+  observer                  : editor-analyze                                                                   
+  on save                   : generate-all                                                                                                              
+  builder                   : "Show abstract syntax" = generate-aterm (openeditor) (realtime) (meta) (source)  
+  builder                   : "Generate All"   =  generate-all (openeditor) (realtime) (meta) (source)
+  builder                   : "Subarch"   =  generate-subarch (openeditor) (realtime) (meta) (source)
+  builder                   : "Generate xADL" = generate-xml (openeditor) (realtime) (meta) (source)                                                                                                               
+  
+                                                                                     

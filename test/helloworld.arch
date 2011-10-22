@@ -1,0 +1,70 @@
+interface ITemperature;
+interface ISensor;
+interface IGPS;
+interface ISensorStore;
+interface IStorage;
+interface IRAMStorage;
+
+component GPSSensor{
+ optional incoming endpoint IGPS query;
+}
+
+adapter GPSConnector{
+ outgoing endpoint IGPS gpsQuery;
+ optional incoming endpoint ISensor sensorQuery;
+}
+
+component TemperatureSensor{
+ optional incoming endpoint ITemperature query;
+}
+
+adapter TemperatureConnector{
+ outgoing endpoint ITemperature temperatureQuery;
+ optional incoming endpoint ISensor sensorQuery;
+}
+
+component SensorStore{
+ optional outgoing endpoint ISensor sensor;
+ //Make this not optional
+ optional incoming endpoint ISensorStore query;
+}
+
+adapter RAMStorageConnector{
+    incoming endpoint IStorage query;
+    optional outgoing endpoint IRAMStorage ramQuery;
+}
+
+component RAMStorage{
+    optional incoming endpoint IRAMStorage query;
+}
+
+component MWA{
+    outgoing endpoint IStorage storage;
+    outgoing endpoint ISensorStore sensors;
+}
+
+architecture helloworld{
+ component GPSSensor gps;
+ adapter GPSConnector gpsConnector;
+ 
+ component TemperatureSensor temp;
+ adapter TemperatureConnector tempConnector;
+ 
+ component SensorStore sensorStore;
+ 
+ component RAMStorage ramStorage;
+ adapter RAMStorageConnector ramConnector;
+ 
+ component MWA mwa;
+ 
+ link gps.query gpsConnector.gpsQuery;
+ link gpsConnector.sensorQuery sensorStore.sensor;
+ 
+ link temp.query tempConnector.temperatureQuery;
+ link tempConnector.sensorQuery sensorStore.sensor;
+ 
+ link ramStorage.query ramConnector.ramQuery;
+ link ramConnector.query mwa.storage;
+ 
+ link mwa.sensors sensorStore.query;
+}

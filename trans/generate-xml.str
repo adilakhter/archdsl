@@ -1,0 +1,194 @@
+module generate-xml
+
+imports 
+	include/ArchDSL
+	
+strategies
+
+  generate-xml:
+    (selected, position, ast, path, project-path) -> (filename, result-string)
+    with
+      filename := <guarantee-extension(|"xml")> path;
+      result-string := <declare-components; declare-adapters; xml> selected;
+      folder-name :=<base-filename;remove-extension>path 
+    with  rules( get-base-namespace := folder-name)
+      
+    rules
+      declare-components = alltd(declare-getComponent)
+      declare-getComponent : e@ComponentDef(name, _, _, endpoints*) -> e
+  		with rules( GetComponentDefinition : name -> e ) 
+    	
+      declare-adapters = alltd(declare-getAdapter)
+      declare-getAdapter : e@AdapterDef(name, _, _, endpoints*) -> e
+  		with rules( GetAdapterDefinition : name -> e ) 
+    	
+	  xml: Application(_, appParts*) ->
+	  	$[<?xml version="1.0" encoding="UTF-8" standalone="no" ?> 
+		<instance:xArch 
+			xmlns:instance="http://www.ics.uci.edu/pub/arch/xArch/instance.xsd" 
+			xmlns:implementation="http://www.ics.uci.edu/pub/arch/xArch/implementation.xsd" 
+			xmlns:javaimplementation="http://www.ics.uci.edu/pub/arch/xArch/javaimplementation.xsd" 
+			xmlns:javainitparams="http://www.ics.uci.edu/pub/arch/xArch/javainitparams.xsd" 
+			xmlns:lookupimplementation="http://www.ics.uci.edu/pub/arch/xArch/lookupimplementation.xsd" 
+			xmlns:types="http://www.ics.uci.edu/pub/arch/xArch/types.xsd" 
+			xmlns:xlink="http://www.w3.org/1999/xlink" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+			xsi:schemaLocation="http://www.ics.uci.edu/pub/arch/xArch/instance.xsd http://www.isr.uci.edu/projects/xarchuci/core/instance.xsd http://www.isr.uci.edu/projects/xarchuci/ext/activitydiagrams.xsd http://www.ics.uci.edu/pub/arch/xArch/changesets.xsd http://www.isr.uci.edu/projects/xarchuci/ext/changesets.xsd http://www.ics.uci.edu/pub/arch/xArch/analysis.xsd http://www.ics.uci.edu/pub/arch/xArch/lookupimplementation.xsd http://www.isr.uci.edu/projects/xarchuci/ext/lookupimplementation.xsd http://www.ics.uci.edu/pub/arch/xArch/javainitparams.xsd http://www.isr.uci.edu/projects/xarchuci/ext/javainitparams.xsd http://www.ics.uci.edu/pub/arch/xArch/javaimplementation.xsd http://www.isr.uci.edu/projects/xarchuci/ext/javaimplementation.xsd http://www.ics.uci.edu/pub/arch/xArch/implementation.xsd http://www.isr.uci.edu/projects/xarchuci/ext/implementation.xsd http://www.ics.uci.edu/pub/arch/xArch/variants.xsd http://www.isr.uci.edu/projects/xarchuci/ext/variants.xsd http://www.ics.uci.edu/pub/arch/xArch/statecharts.xsd http://www.isr.uci.edu/projects/xarchuci/ext/statecharts.xsd http://www.ics.uci.edu/pub/arch/xArch/types.xsd http://www.isr.uci.edu/projects/xarchuci/ext/types.xsd">
+			[<xml-types>appParts*]
+			[archs]
+		</instance:xArch>]
+			where archs := <filter(xml-arch); concat-strings>appParts*
+	  
+	  xml-types: appParts* ->
+	  	$[<types:archTypes xsi:type="types:ArchTypes">[<filter(xml-app-element); concat-strings>appParts*]</types:archTypes>]
+	  
+	  xml-app-element: ComponentDef(name, builtinClass, params*, endpoint*) ->
+	  	$[<types:componentType types:id="component-[name]" xsi:type="implementation:VariantComponentTypeImpl">
+	  		[<xml-description>name]
+	  		[<xml-javaImpl(|params*)>implementation]
+	  		[<map(xml-signature(|name)); concat-strings>endpoint*]
+	  	</types:componentType>]
+	  		where implementation := <equal(|builtinClass ,None())<+ <xml-builtinclass>builtinClass> name
+	  	
+	  xml-app-element: AdapterDef(name, builtinClass, params*, endpoint*) ->
+	  	$[<types:connectorType types:id="adapter-[name]" xsi:type="implementation:VariantConnectorTypeImpl"> 
+	  		[<xml-description>name]
+	  		[<xml-javaImpl(|params*)>implementation]
+	  		[<map(xml-signature(|name)); concat-strings>endpoint*]
+	  	</types:connectorType>]	
+	  		where implementation := <equal(|builtinClass ,None())<+ <xml-builtinclass>builtinClass> name
+	  
+	  xml-app-element: InterfaceDef(name, builtinClass) ->
+	  	$[<types:interfaceType types:id="interface-[name]" xsi:type="implementation:InterfaceTypeImpl">
+	  		[<xml-description>name]
+	  		[<xml-javaImpl>implementation] 
+	  	</types:interfaceType>]  
+	  		where implementation := <equal(|builtinClass ,None())<+ <xml-builtinclass>builtinClass> name
+	  
+	  xml-arch: ArchitectureDef(name, components*) ->
+	  	$[<types:archStructure types:id="arch-[name]" xsi:type="types:ArchStructure">
+	  		[<xml-description>name]
+	  		[<filter(xml-arch-component(|name)); concat-strings>components*]
+	  		[<filter(xml-arch-adapter(|name)); concat-strings>components*]
+	  		[<filter(xml-arch-link(|name)); concat-strings>components*]
+	  	</types:archStructure>]
+	  
+	  xml-arch-link(|arch-name): Link(endpoint1, endpoint2) ->
+	  	$[<types:link types:id="link-[arch-name]-[concated-endpoints]" xsi:type="types:Link">
+	  		[<xml-description>concated-endpoints]
+	  		[<xml-endpoint(|arch-name)>endpoint1]
+	  		[<xml-endpoint(|arch-name)>endpoint2]
+	  	</types:link>]
+	  		where concated-endpoints := $[[<xml-concat-endpoint-parts>endpoint1]-[<xml-concat-endpoint-parts>endpoint2]]
+	  
+	  xml-concat-endpoint-parts: EndPoint(object, interface) -> $[[object]-[interface]]
+	  
+	  xml-endpoint(|arch-name): EndPoint(object, interface) ->
+	  	$[<types:point xsi:type="instance:Point">
+			<instance:anchorOnInterface xlink:href="#interface-[arch-name]-[object]-[interface]" xlink:type="simple" xsi:type="instance:XMLLink" /> 
+		</types:point>]
+	  	  
+	  xml-arch-component(|arch-name): Component(type, name) ->
+	  	$[<types:component types:id="[arch-name]-[name]" xsi:type="types:Component">
+	  		[<xml-description>name]
+	  		[<xml-arch-component-ref>type]
+	  		[<xml-arch-component-interface(|arch-name,type, name)>componentDef]
+	  	</types:component>]
+	  		where componentDef := <GetComponentDefinition>type
+	  
+	  xml-arch-adapter(|arch-name): Adapter(type, name) ->
+	  	$[<types:connector types:id="[arch-name]-[name]" xsi:type="types:Connector">
+	  		[<xml-description>name]
+	  		[<xml-arch-adapter-ref>type]
+	  		[<xml-arch-adapter-interface(|arch-name,type, name)>adapterDef]
+	  	</types:connector>]
+	  		where adapterDef := <GetAdapterDefinition>type
+	  
+	  xml-arch-component-ref: component-type ->
+	  	$[<types:type xlink:href="#component-[component-type]" xlink:type="simple" xsi:type="instance:XMLLink" />]
+	  
+	   xml-arch-adapter-ref: adapter-type ->
+	  	$[<types:type xlink:href="#adapter-[adapter-type]" xlink:type="simple" xsi:type="instance:XMLLink" />]
+	  
+	  xml-arch-interface-ref: interface-type ->
+	  	$[<types:type xlink:href="#interface-[interface-type]" xlink:type="simple" xsi:type="instance:XMLLink" />]
+	  
+	  xml-arch-signature-ref(|component-name): name ->
+	  	$[<types:signature xlink:href="#signature-[component-name]-[name]" xlink:type="simple" xsi:type="instance:XMLLink" />]
+	  
+	  xml-arch-component-interface(|arch-name, component-type, component-name): ComponentDef(name, _, _, endpoint*) -> <map(xml-arch-member-interface(|arch-name, component-type, component-name)); concat-strings>endpoint*
+	  xml-arch-adapter-interface(|arch-name, component-type, component-name): AdapterDef(name, _, _, endpoint*) -> <map(xml-arch-member-interface(|arch-name, component-type, component-name)); concat-strings>endpoint*
+	  
+	  xml-arch-member-interface(|arch-name, component-type, component-name): EndPointDef(Some(optional), direction, type, name) ->
+	  	$[<types:interface types:id="interface-[arch-name]-[component-name]-[name]" xsi:type="options:OptionalInterface">
+	  		[<xml-description>name]
+	  		[<xml-interface-direction-start>direction]
+	  		[<xml-arch-interface-ref>type]
+	  		[<xml-arch-signature-ref(|component-type)>name]
+	  	</types:interface>]
+	  xml-arch-member-interface(|arch-name, component-type, component-name): EndPointDef(None(), direction, type, name) ->
+	  	$[<types:interface types:id="interface-[arch-name]-[component-name]-[name]" xsi:type="types:Interface">
+	  		[<xml-description>name]
+	  		[<xml-interface-direction-start>direction]
+	  		[<xml-arch-interface-ref>type]
+	  		[<xml-arch-signature-ref(|component-type)>name]
+	  	</types:interface>]
+	  
+	  xml-description: name ->
+	  	$[<types:description xsi:type="instance:Description">[name]</types:description>]
+	  
+	  xml-javaImpl: name ->
+	  	$[<implementation:implementation xsi:type="javaimplementation:JavaImplementation">
+	  		<javaimplementation:mainClass xsi:type="javaimplementation:JavaClassFile">
+  				<javaimplementation:javaClassName xsi:type="javaimplementation:JavaClassName">[<get-qualified-java-implementation-name>name]</javaimplementation:javaClassName> 
+  			</javaimplementation:mainClass>
+  		</implementation:implementation>]
+  		
+  	  xml-javaImpl(|params*): name ->
+	  	$[<implementation:implementation xsi:type="javaimplementation:JavaImplementation">
+	  		<javaimplementation:mainClass xsi:type="[<xml-javaClassFile>params*]">
+  				<javaimplementation:javaClassName xsi:type="javaimplementation:JavaClassName">[<get-qualified-java-implementation-name>name]</javaimplementation:javaClassName>
+  				[<xml-params>params*] 
+  			</javaimplementation:mainClass>
+  		</implementation:implementation>]
+	  
+	  get-qualified-java-implementation-name : name -> qualifiedName
+      where 
+            (package-name-parts-temp, className) :=   <string-tokenize(|['.']);split-init-last>name
+      where 
+            if (<eq> (package-name-parts-temp, [])) then
+                qualifiedName := <concat-strings>[ <get-base-namespace> ,".",name] 
+            else 
+                qualifiedName := name
+            end
+            
+	  xml-lookupImpl: name ->
+	  	$[<implementation:implementation xsi:type="lookupimplementation:LookupImplementation">
+  			<lookupimplementation:name xsi:type="lookupimplementation:LookupName">[name]</lookupimplementation:name> 
+  		</implementation:implementation>]
+	  	  
+	  xml-javaClassFile: [] -> "javaimplementation:JavaClassFile"
+	  xml-javaClassFile: _  -> "javainitparams:JavaClassFileParams"
+	  
+	  xml-signature(|component-name): EndPointDef(_, direction, type, name) ->
+	  	$[<types:signature types:id="signature-[component-name]-[name]" xsi:type="implementation:SignatureImpl">
+	  		[<xml-description>name]
+	  		[<xml-interface-direction-start>direction]
+	  		[<xml-lookupImpl>name]
+	  		[<xml-arch-interface-ref>type]
+	  	</types:signature>]
+	  
+	  xml-params: params* -> <map(xml-param); concat-strings>params*
+	  xml-param: Param(key, value) -> 
+	    $[<javainitparams:initializationParameter javainitparams:name="[key]" javainitparams:value=[value] xsi:type="javainitparams:InitializationParameter"/>]
+	  
+	  xml-interface-direction-start: direction ->
+	  	$[<types:direction xsi:type="instance:Direction">[<xml-interface-direction>direction]</types:direction>]
+	  
+	  
+	 
+	  xml-interface-direction: Incoming() -> "in"
+	  xml-interface-direction: Outgoing() -> "out"
+	  xml-interface-direction: Inout() -> "inout"
+  
+  	  xml-builtinclass: Some(BuiltInClass(className)) -> className

@@ -1,0 +1,40 @@
+%% Grammar for the ArchDSL language
+%% By default, based on an example "entities" syntax
+module ArchDSL
+
+imports Common
+
+exports
+
+  context-free start-symbols
+    Start
+
+  context-free syntax
+  
+  	Include* AppElement*									-> Start {cons("Application")}
+  	
+  	"include" PATH ";"										-> Include{cons("Include")}
+  	
+  	"interface" CLASS BuiltInClass? ";"						-> AppElement{cons("InterfaceDef")}
+  	"component" CLASS BuiltInClass? "{" Param* EndPoint* "}"	-> AppElement{cons("ComponentDef")}
+  	"adapter" CLASS BuiltInClass? "{" Param* EndPoint* "}"		-> AppElement{cons("AdapterDef")}
+  	"architecture" ID "{" ArchPart* "}"						-> AppElement{cons("ArchitectureDef")}
+  	"using" CLASS											-> BuiltInClass{cons("BuiltInClass")}
+  	
+  	"param" ID "=" STRING ";"								-> Param{cons("Param")}
+  	Optional? Direction "endpoint" ID ID ";"				-> EndPoint{cons("EndPointDef")}
+  	
+	"component" CLASS ID  ";"									-> ArchPart{cons("Component")}
+	"adapter" CLASS ID  ";"									-> ArchPart{cons("Adapter")}
+	"link" PartReference PartReference  ";"					-> ArchPart{cons("Link")}
+	"subarchitecture" CLASS ID ";"							-> ArchPart{cons("Subarchitecture")}
+	Optional? Direction "endpoint" PartReference ID ";"		-> ArchPart{cons("ArchEndpointDef")}
+	
+	ID "." ID												-> PartReference{cons("EndPoint")}
+	
+	"incoming"												-> Direction{cons("Incoming")}
+	"outgoing"												-> Direction{cons("Outgoing")}
+	"inout"													-> Direction{cons("Inout")}
+	"optional"												-> Optional {cons("Optional")}
+	 
+	

@@ -1,0 +1,31 @@
+interface IMessages;
+
+component Server
+{
+    incoming endpoint IMessages in;
+    outgoing endpoint IMessages dummyOut;
+}
+component Client 
+{
+    outgoing endpoint IMessages out;
+    incoming endpoint IMessages dummyIn;
+}
+
+architecture simple
+{
+    component Server server;
+    component Client client1;
+    component Client client2;
+    
+    link server.in client1.out;
+    link server.dummyOut client1.dummyIn;
+    
+    link server.in client2.out;
+    link server.dummyOut client2.dummyIn;
+    
+    //Example 1:  non existent compoennt
+    //link server21.out client.out;
+    
+    //Example 2:  following is the incositent link direction
+    //link server.out client.out;
+}

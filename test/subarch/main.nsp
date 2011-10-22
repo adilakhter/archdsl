@@ -1,0 +1,18 @@
+Application(
+  None()
+, [ InterfaceDef("main.IMessageDispatcher", None())
+  , ComponentDef(
+      "main.MessageDispatcher"
+    , None()
+    , []
+    , [EndPointDef(None(), Outgoing(), "main.IMessageDispatcher", "disp")]
+    )
+  , ArchitectureDef(
+      "main"
+    , [ Component("main.MessageDispatcher", "msgDisp")
+      , Subarchitecture("core", "coreComp")
+      , Link(EndPoint("coreComp", "messages"), EndPoint("msgDisp", "disp"))
+      ]
+    )
+  ]
+)

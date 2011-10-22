@@ -1,0 +1,46 @@
+module transform-namespace
+
+imports 
+	include/ArchDSL
+	
+strategies
+
+  transform-namespace:
+    (selected, position, ast, path, project-path) -> (filename, result-string)
+    with
+      filename := <guarantee-extension(|"nsp")> path;
+      result-string := <declare-arch; to-nsp-arch(|"")> selected
+
+  transform-namespace(|parentNsp): app@Application(_, _) -> 
+  					   			  <declare-arch; to-nsp-arch(|parentNsp)>app
+     
+    rules
+      declare-arch = alltd(declare-getArch)
+      declare-getArch: arch@ArchitectureDef(name, _) -> arch
+  		with rules( GetArchitectureName := name ) 
+
+	  to-nsp-arch(|parentNsp): Application(_, appParts*) -> 
+	  						   Application(None(), <filter(nsp-element(|parentNsp))>appParts*)
+	  
+	  nsp-element(|parentNsp): InterfaceDef(name, builtinClass) ->
+	  			  			   InterfaceDef(<nsp-append-namespace(|parentNsp)>name, builtinClass)
+	  nsp-element(|parentNsp): ComponentDef(name, builtinClass, params*, endpoint*) ->
+	  	 		   			   ComponentDef(<nsp-append-namespace(|parentNsp)>name, builtinClass, params*, <map(nsp-element-part(|parentNsp))>endpoint*)
+	  nsp-element(|parentNsp): AdapterDef(name, builtinClass, params*, endpoint*) ->
+	  			   			   AdapterDef(<nsp-append-namespace(|parentNsp)>name, builtinClass, params*, <map(nsp-element-part(|parentNsp))>endpoint*)
+	  nsp-element(|parentNsp): ArchitectureDef(name, components*) ->
+	  			   			   ArchitectureDef(<nsp-namespace>parentNsp, <map(nsp-element-part(|parentNsp))>components*)
+	  
+	  nsp-element-part(|parentNsp): EndPointDef(optional, direction, type, name) ->
+									EndPointDef(optional, direction, <nsp-append-namespace(|parentNsp)>type, name)
+	  nsp-element-part(|parentNsp): Component(type, name) ->
+	  								Component(<nsp-append-namespace(|parentNsp)>type, name)
+	  nsp-element-part(|parentNsp): Adapter(type, name) ->
+	  								Adapter(<nsp-append-namespace(|parentNsp)>type, name)
+	  nsp-element-part(|parentNsp): otherPart ->
+	  								otherPart
+
+  	  nsp-append-namespace(|parentNsp): originalName -> $[[<nsp-namespace>parentNsp].[originalName]]	
+  	  nsp-namespace: parentNsp -> $[[parentNsp][namespace]]
+  	  									where namespace := <GetArchitectureName>[]							
+  	  									

@@ -1,0 +1,12 @@
+interface ICoreMessages;
+interface ICoreCompMessages;
+
+component C1{
+	incoming endpoint ICoreCompMessages messages;
+}
+
+architecture core{
+	component C1 innerComp;
+	
+	incoming endpoint innerComp.messages messages;
+}

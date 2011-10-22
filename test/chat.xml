@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?> 
+<instance:xArch 
+	xmlns:instance="http://www.ics.uci.edu/pub/arch/xArch/instance.xsd" 
+	xmlns:implementation="http://www.ics.uci.edu/pub/arch/xArch/implementation.xsd" 
+	xmlns:javaimplementation="http://www.ics.uci.edu/pub/arch/xArch/javaimplementation.xsd" 
+	xmlns:javainitparams="http://www.ics.uci.edu/pub/arch/xArch/javainitparams.xsd" 
+	xmlns:lookupimplementation="http://www.ics.uci.edu/pub/arch/xArch/lookupimplementation.xsd" 
+	xmlns:types="http://www.ics.uci.edu/pub/arch/xArch/types.xsd" 
+	xmlns:xlink="http://www.w3.org/1999/xlink" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.ics.uci.edu/pub/arch/xArch/instance.xsd http://www.isr.uci.edu/projects/xarchuci/core/instance.xsd http://www.isr.uci.edu/projects/xarchuci/ext/activitydiagrams.xsd http://www.ics.uci.edu/pub/arch/xArch/changesets.xsd http://www.isr.uci.edu/projects/xarchuci/ext/changesets.xsd http://www.ics.uci.edu/pub/arch/xArch/analysis.xsd http://www.ics.uci.edu/pub/arch/xArch/lookupimplementation.xsd http://www.isr.uci.edu/projects/xarchuci/ext/lookupimplementation.xsd http://www.ics.uci.edu/pub/arch/xArch/javainitparams.xsd http://www.isr.uci.edu/projects/xarchuci/ext/javainitparams.xsd http://www.ics.uci.edu/pub/arch/xArch/javaimplementation.xsd http://www.isr.uci.edu/projects/xarchuci/ext/javaimplementation.xsd http://www.ics.uci.edu/pub/arch/xArch/implementation.xsd http://www.isr.uci.edu/projects/xarchuci/ext/implementation.xsd http://www.ics.uci.edu/pub/arch/xArch/variants.xsd http://www.isr.uci.edu/projects/xarchuci/ext/variants.xsd http://www.ics.uci.edu/pub/arch/xArch/statecharts.xsd http://www.isr.uci.edu/projects/xarchuci/ext/statecharts.xsd http://www.ics.uci.edu/pub/arch/xArch/types.xsd http://www.isr.uci.edu/projects/xarchuci/ext/types.xsd">
+	<types:archTypes xsi:type="types:ArchTypes"><types:interfaceType types:id="interface-IChat" xsi:type="implementation:InterfaceTypeImpl">
+	                                            	<types:description xsi:type="instance:Description">IChat</types:description>
+	                                            	<implementation:implementation xsi:type="javaimplementation:JavaImplementation">
+	                                            		<javaimplementation:mainClass xsi:type="javaimplementation:JavaClassFile">
+	                                            			<javaimplementation:javaClassName xsi:type="javaimplementation:JavaClassName">IChat</javaimplementation:javaClassName> 
+	                                            		</javaimplementation:mainClass>
+	                                            	</implementation:implementation> 
+	                                            </types:interfaceType><types:interfaceType types:id="interface-IChatEvents" xsi:type="implementation:InterfaceTypeImpl">
+	                                            	<types:description xsi:type="instance:Description">IChatEvents</types:description>
+	                                            	<implementation:implementation xsi:type="javaimplementation:JavaImplementation">
+	                                            		<javaimplementation:mainClass xsi:type="javaimplementation:JavaClassFile">
+	                                            			<javaimplementation:javaClassName xsi:type="javaimplementation:JavaClassName">IChatEvents</javaimplementation:javaClassName> 
+	                                            		</javaimplementation:mainClass>
+	                                            	</implementation:implementation> 
+	                                            </types:interfaceType><types:componentType types:id="component-ChatServer" xsi:type="implementation:VariantComponentTypeImpl">
+	                                            	<types:description xsi:type="instance:Description">ChatServer</types:description>
+	                                            	<implementation:implementation xsi:type="javaimplementation:JavaImplementation">
+	                                            		<javaimplementation:mainClass xsi:type="javainitparams:JavaClassFileParams">
+	                                            			<javaimplementation:javaClassName xsi:type="javaimplementation:JavaClassName">ChatServer</javaimplementation:javaClassName>
+	                                            			<javainitparams:initializationParameter javainitparams:name="ssss" javainitparams:value="asgasgas" xsi:type="javainitparams:InitializationParameter"/> 
+	                                            		</javaimplementation:mainClass>
+	                                            	</implementation:implementation>
+	                                            	<types:signature types:id="signature-ChatServer-chat" xsi:type="implementation:SignatureImpl">
+	                                            		<types:description xsi:type="instance:Description">chat</types:description>
+	                                            		<types:direction xsi:type="instance:Direction">in</types:direction>
+	                                            		<implementation:implementation xsi:type="lookupimplementation:LookupImplementation">
+	                                            			<lookupimplementation:name xsi:type="lookupimplementation:LookupName">chat</lookupimplementation:name> 
+	                                            		</implementation:implementation>
+	                                            		<types:type xlink:href="#interface-IChat" xlink:type="simple" xsi:type="instance:XMLLink" />
+	                                            	</types:signature><types:signature types:id="signature-ChatServer-chatEv" xsi:type="implementation:SignatureImpl">
+	                                            		<types:description xsi:type="instance:Description">chatEv</types:description>
+	                                            		<types:direction xsi:type="instance:Direction">out</types:direction>
+	                                            		<implementation:implementation xsi:type="lookupimplementation:LookupImplementation">
+	                                            			<lookupimplementation:name xsi:type="lookupimplementation:LookupName">chatEv</lookupimplementation:name> 
+	                                            		</implementation:implementation>
+	                                            		<types:type xlink:href="#interface-IChatEvents" xlink:type="simple" xsi:type="instance:XMLLink" />
+	                                            	</types:signature>
+	                                            </types:componentType><types:componentType types:id="component-ChatClient" xsi:type="implementation:VariantComponentTypeImpl">
+	                                            	<types:description xsi:type="instance:Description">ChatClient</types:description>
+	                                            	<implementation:implementation xsi:type="javaimplementation:JavaImplementation">
+	                                            		<javaimplementation:mainClass xsi:type="javaimplementation:JavaClassFile">
+	                                            			<javaimplementation:javaClassName xsi:type="javaimplementation:JavaClassName">ChatClient</javaimplementation:javaClassName>
+	                                            			 
+	                                            		</javaimplementation:mainClass>
+	                                            	</implementation:implementation>
+	                                            	<types:signature types:id="signature-ChatClient-chat" xsi:type="implementation:SignatureImpl">
+	                                            		<types:description xsi:type="instance:Description">chat</types:description>
+	                                            		<types:direction xsi:type="instance:Direction">out</types:direction>
+	                                            		<implementation:implementation xsi:type="lookupimplementation:LookupImplementation">
+	                                            			<lookupimplementation:name xsi:type="lookupimplementation:LookupName">chat</lookupimplementation:name> 
+	                                            		</implementation:implementation>
+	                                            		<types:type xlink:href="#interface-IChat" xlink:type="simple" xsi:type="instance:XMLLink" />
+	                                            	</types:signature><types:signature types:id="signature-ChatClient-chatEv" xsi:type="implementation:SignatureImpl">
+	                                            		<types:description xsi:type="instance:Description">chatEv</types:description>
+	                                            		<types:direction xsi:type="instance:Direction">in</types:direction>
+	                                            		<implementation:implementation xsi:type="lookupimplementation:LookupImplementation">
+	                                            			<lookupimplementation:name xsi:type="lookupimplementation:LookupName">chatEv</lookupimplementation:name> 
+	                                            		</implementation:implementation>
+	                                            		<types:type xlink:href="#interface-IChatEvents" xlink:type="simple" xsi:type="instance:XMLLink" />
+	                                            	</types:signature>
+	                                            </types:componentType><types:connectorType types:id="adapter-EventPump" xsi:type="implementation:VariantConnectorTypeImpl"> 
+	                                            	<types:description xsi:type="instance:Description">EventPump</types:description>
+	                                            	<implementation:implementation xsi:type="javaimplementation:JavaImplementation">
+	                                            		<javaimplementation:mainClass xsi:type="javaimplementation:JavaClassFile">
+	                                            			<javaimplementation:javaClassName xsi:type="javaimplementation:JavaClassName">EventPump</javaimplementation:javaClassName>
+	                                            			 
+	                                            		</javaimplementation:mainClass>
+	                                            	</implementation:implementation>
+	                                            	<types:signature types:id="signature-EventPump-inEv" xsi:type="implementation:SignatureImpl">
+	                                            		<types:description xsi:type="instance:Description">inEv</types:description>
+	                                            		<types:direction xsi:type="instance:Direction">in</types:direction>
+	                                            		<implementation:implementation xsi:type="lookupimplementation:LookupImplementation">
+	                                            			<lookupimplementation:name xsi:type="lookupimplementation:LookupName">inEv</lookupimplementation:name> 
+	                                            		</implementation:implementation>
+	                                            		<types:type xlink:href="#interface-IChatEvents" xlink:type="simple" xsi:type="instance:XMLLink" />
+	                                            	</types:signature><types:signature types:id="signature-EventPump-outEv" xsi:type="implementation:SignatureImpl">
+	                                            		<types:description xsi:type="instance:Description">outEv</types:description>
+	                                            		<types:direction xsi:type="instance:Direction">out</types:direction>
+	                                            		<implementation:implementation xsi:type="lookupimplementation:LookupImplementation">
+	                                            			<lookupimplementation:name xsi:type="lookupimplementation:LookupName">outEv</lookupimplementation:name> 
+	                                            		</implementation:implementation>
+	                                            		<types:type xlink:href="#interface-IChatEvents" xlink:type="simple" xsi:type="instance:XMLLink" />
+	                                            	</types:signature>
+	                                            </types:connectorType><types:connectorType types:id="adapter-EventPump1" xsi:type="implementation:VariantConnectorTypeImpl"> 
+	                                            	<types:description xsi:type="instance:Description">EventPump1</types:description>
+	                                            	<implementation:implementation xsi:type="javaimplementation:JavaImplementation">
+	                                            		<javaimplementation:mainClass xsi:type="javaimplementation:JavaClassFile">
+	                                            			<javaimplementation:javaClassName xsi:type="javaimplementation:JavaClassName">EventPump1</javaimplementation:javaClassName>
+	                                            			 
+	                                            		</javaimplementation:mainClass>
+	                                            	</implementation:implementation>
+	                                            	<types:signature types:id="signature-EventPump1-inEv" xsi:type="implementation:SignatureImpl">
+	                                            		<types:description xsi:type="instance:Description">inEv</types:description>
+	                                            		<types:direction xsi:type="instance:Direction">in</types:direction>
+	                                            		<implementation:implementation xsi:type="lookupimplementation:LookupImplementation">
+	                                            			<lookupimplementation:name xsi:type="lookupimplementation:LookupName">inEv</lookupimplementation:name> 
+	                                            		</implementation:implementation>
+	                                            		<types:type xlink:href="#interface-IChatEvents" xlink:type="simple" xsi:type="instance:XMLLink" />
+	                                            	</types:signature><types:signature types:id="signature-EventPump1-outEv" xsi:type="implementation:SignatureImpl">
+	                                            		<types:description xsi:type="instance:Description">outEv</types:description>
+	                                            		<types:direction xsi:type="instance:Direction">out</types:direction>
+	                                            		<implementation:implementation xsi:type="lookupimplementation:LookupImplementation">
+	                                            			<lookupimplementation:name xsi:type="lookupimplementation:LookupName">outEv</lookupimplementation:name> 
+	                                            		</implementation:implementation>
+	                                            		<types:type xlink:href="#interface-IChatEvents" xlink:type="simple" xsi:type="instance:XMLLink" />
+	                                            	</types:signature>
+	                                            </types:connectorType></types:archTypes>
+	<types:archStructure types:id="arch-ChatApplication" xsi:type="types:ArchStructure">
+		<types:description xsi:type="instance:Description">ChatApplication</types:description>
+		<types:component types:id="ChatApplication-server" xsi:type="types:Component">
+			<types:description xsi:type="instance:Description">server</types:description>
+			<types:type xlink:href="#component-ChatServer" xlink:type="simple" xsi:type="instance:XMLLink" />
+			<types:interface types:id="interface-ChatApplication-server-chat" xsi:type="options:OptionalInterface">
+				<types:description xsi:type="instance:Description">chat</types:description>
+				<types:direction xsi:type="instance:Direction">in</types:direction>
+				<types:type xlink:href="#interface-IChat" xlink:type="simple" xsi:type="instance:XMLLink" />
+				<types:signature xlink:href="#signature-ChatServer-chat" xlink:type="simple" xsi:type="instance:XMLLink" />
+			</types:interface><types:interface types:id="interface-ChatApplication-server-chatEv" xsi:type="types:Interface">
+				<types:description xsi:type="instance:Description">chatEv</types:description>
+				<types:direction xsi:type="instance:Direction">out</types:direction>
+				<types:type xlink:href="#interface-IChatEvents" xlink:type="simple" xsi:type="instance:XMLLink" />
+				<types:signature xlink:href="#signature-ChatServer-chatEv" xlink:type="simple" xsi:type="instance:XMLLink" />
+			</types:interface>
+		</types:component><types:component types:id="ChatApplication-client1" xsi:type="types:Component">
+			<types:description xsi:type="instance:Description">client1</types:description>
+			<types:type xlink:href="#component-ChatClient" xlink:type="simple" xsi:type="instance:XMLLink" />
+			<types:interface types:id="interface-ChatApplication-client1-chat" xsi:type="options:OptionalInterface">
+				<types:description xsi:type="instance:Description">chat</types:description>
+				<types:direction xsi:type="instance:Direction">out</types:direction>
+				<types:type xlink:href="#interface-IChat" xlink:type="simple" xsi:type="instance:XMLLink" />
+				<types:signature xlink:href="#signature-ChatClient-chat" xlink:type="simple" xsi:type="instance:XMLLink" />
+			</types:interface><types:interface types:id="interface-ChatApplication-client1-chatEv" xsi:type="types:Interface">
+				<types:description xsi:type="instance:Description">chatEv</types:description>
+				<types:direction xsi:type="instance:Direction">in</types:direction>
+				<types:type xlink:href="#interface-IChatEvents" xlink:type="simple" xsi:type="instance:XMLLink" />
+				<types:signature xlink:href="#signature-ChatClient-chatEv" xlink:type="simple" xsi:type="instance:XMLLink" />
+			</types:interface>
+		</types:component><types:component types:id="ChatApplication-client2" xsi:type="types:Component">
+			<types:description xsi:type="instance:Description">client2</types:description>
+			<types:type xlink:href="#component-ChatClient" xlink:type="simple" xsi:type="instance:XMLLink" />
+			<types:interface types:id="interface-ChatApplication-client2-chat" xsi:type="options:OptionalInterface">
+				<types:description xsi:type="instance:Description">chat</types:description>
+				<types:direction xsi:type="instance:Direction">out</types:direction>
+				<types:type xlink:href="#interface-IChat" xlink:type="simple" xsi:type="instance:XMLLink" />
+				<types:signature xlink:href="#signature-ChatClient-chat" xlink:type="simple" xsi:type="instance:XMLLink" />
+			</types:interface><types:interface types:id="interface-ChatApplication-client2-chatEv" xsi:type="types:Interface">
+				<types:description xsi:type="instance:Description">chatEv</types:description>
+				<types:direction xsi:type="instance:Direction">in</types:direction>
+				<types:type xlink:href="#interface-IChatEvents" xlink:type="simple" xsi:type="instance:XMLLink" />
+				<types:signature xlink:href="#signature-ChatClient-chatEv" xlink:type="simple" xsi:type="instance:XMLLink" />
+			</types:interface>
+		</types:component>
+		<types:connector types:id="ChatApplication-pump" xsi:type="types:Connector">
+			<types:description xsi:type="instance:Description">pump</types:description>
+			<types:type xlink:href="#adapter-EventPump" xlink:type="simple" xsi:type="instance:XMLLink" />
+			<types:interface types:id="interface-ChatApplication-pump-inEv" xsi:type="types:Interface">
+				<types:description xsi:type="instance:Description">inEv</types:description>
+				<types:direction xsi:type="instance:Direction">in</types:direction>
+				<types:type xlink:href="#interface-IChatEvents" xlink:type="simple" xsi:type="instance:XMLLink" />
+				<types:signature xlink:href="#signature-EventPump-inEv" xlink:type="simple" xsi:type="instance:XMLLink" />
+			</types:interface><types:interface types:id="interface-ChatApplication-pump-outEv" xsi:type="types:Interface">
+				<types:description xsi:type="instance:Description">outEv</types:description>
+				<types:direction xsi:type="instance:Direction">out</types:direction>
+				<types:type xlink:href="#interface-IChatEvents" xlink:type="simple" xsi:type="instance:XMLLink" />
+				<types:signature xlink:href="#signature-EventPump-outEv" xlink:type="simple" xsi:type="instance:XMLLink" />
+			</types:interface>
+		</types:connector>
+		<types:link types:id="link-ChatApplication-server-chat-client1-chat" xsi:type="types:Link">
+			<types:description xsi:type="instance:Description">server-chat-client1-chat</types:description>
+			<types:point xsi:type="instance:Point">
+			<instance:anchorOnInterface xlink:href="#interface-ChatApplication-server-chat" xlink:type="simple" xsi:type="instance:XMLLink" /> 
+			</types:point>
+			<types:point xsi:type="instance:Point">
+			<instance:anchorOnInterface xlink:href="#interface-ChatApplication-client1-chat" xlink:type="simple" xsi:type="instance:XMLLink" /> 
+			</types:point>
+		</types:link><types:link types:id="link-ChatApplication-server-chat-client2-chat" xsi:type="types:Link">
+			<types:description xsi:type="instance:Description">server-chat-client2-chat</types:description>
+			<types:point xsi:type="instance:Point">
+			<instance:anchorOnInterface xlink:href="#interface-ChatApplication-server-chat" xlink:type="simple" xsi:type="instance:XMLLink" /> 
+			</types:point>
+			<types:point xsi:type="instance:Point">
+			<instance:anchorOnInterface xlink:href="#interface-ChatApplication-client2-chat" xlink:type="simple" xsi:type="instance:XMLLink" /> 
+			</types:point>
+		</types:link><types:link types:id="link-ChatApplication-pump-inEv-server-chatEv" xsi:type="types:Link">
+			<types:description xsi:type="instance:Description">pump-inEv-server-chatEv</types:description>
+			<types:point xsi:type="instance:Point">
+			<instance:anchorOnInterface xlink:href="#interface-ChatApplication-pump-inEv" xlink:type="simple" xsi:type="instance:XMLLink" /> 
+			</types:point>
+			<types:point xsi:type="instance:Point">
+			<instance:anchorOnInterface xlink:href="#interface-ChatApplication-server-chatEv" xlink:type="simple" xsi:type="instance:XMLLink" /> 
+			</types:point>
+		</types:link><types:link types:id="link-ChatApplication-pump-outEv-client1-chatEv" xsi:type="types:Link">
+			<types:description xsi:type="instance:Description">pump-outEv-client1-chatEv</types:description>
+			<types:point xsi:type="instance:Point">
+			<instance:anchorOnInterface xlink:href="#interface-ChatApplication-pump-outEv" xlink:type="simple" xsi:type="instance:XMLLink" /> 
+			</types:point>
+			<types:point xsi:type="instance:Point">
+			<instance:anchorOnInterface xlink:href="#interface-ChatApplication-client1-chatEv" xlink:type="simple" xsi:type="instance:XMLLink" /> 
+			</types:point>
+		</types:link><types:link types:id="link-ChatApplication-client2-chatEv-pump-outEv" xsi:type="types:Link">
+			<types:description xsi:type="instance:Description">client2-chatEv-pump-outEv</types:description>
+			<types:point xsi:type="instance:Point">
+			<instance:anchorOnInterface xlink:href="#interface-ChatApplication-client2-chatEv" xlink:type="simple" xsi:type="instance:XMLLink" /> 
+			</types:point>
+			<types:point xsi:type="instance:Point">
+			<instance:anchorOnInterface xlink:href="#interface-ChatApplication-pump-outEv" xlink:type="simple" xsi:type="instance:XMLLink" /> 
+			</types:point>
+		</types:link>
+	</types:archStructure>
+</instance:xArch>

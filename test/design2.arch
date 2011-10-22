@@ -1,0 +1,182 @@
+//interfaces for network communication
+interface mobilestation.IMWARequestCommunicator;
+interface mobilestation.IMWAResponseCommunicator;
+interface gateway.IGatewayRequestCommunicator;
+interface gateway.IGatewayResponseCommunicator; 
+
+// interfaces sensors  
+interface sensors.ITemperature;
+interface sensors.ISensor;
+interface sensors.IGPS;
+interface sensors.ISensorStore;
+interface sensors.ISensorStoreConfiguration;
+interface storage.IStorage;
+
+// Interfaces for User Interface 
+interface gui.IUserInterface;
+interface gui.IUserInterfaceListener;
+
+
+component gui.MWAUI 
+{
+    incoming endpoint gui.IUserInterface inUserInterface; // from component
+    outgoing endpoint gui.IUserInterfaceListener outListener; // to component        
+}
+component mobilestation.MobileStation
+{
+  optional outgoing endpoint mobilestation.IMWARequestCommunicator srequester;
+  optional incoming endpoint mobilestation.IMWAResponseCommunicator sresponder;
+  outgoing endpoint storage.IStorage storage;
+  
+  outgoing endpoint gui.IUserInterface outUserInterface; // to user interface
+  incoming endpoint gui.IUserInterfaceListener inListener; // from user inteface
+  
+  outgoing endpoint sensors.ISensorStoreConfiguration outSensorConfigurator; // to sensor store
+}
+
+adapter gateway.MobileStationGateway 
+{
+  optional outgoing endpoint gateway.IGatewayRequestCommunicator grequester;
+  optional incoming endpoint gateway.IGatewayResponseCommunicator gresponder;
+}
+
+component sensors.GPSSensor{
+ optional incoming endpoint sensors.IGPS query;
+}
+
+adapter sensors.GPSConnector{
+ outgoing endpoint sensors.IGPS gpsQuery;
+ optional incoming endpoint sensors.ISensor query;
+}
+
+component sensors.TemperatureSensor{
+ optional incoming endpoint sensors.ITemperature temperatureQuery;
+}
+
+adapter sensors.TemperatureConnector{
+ outgoing endpoint sensors.ITemperature temperatureQuery;
+ optional incoming endpoint sensors.ISensor sensorQuery;
+}
+
+component sensors.SensorStore
+{
+ optional outgoing endpoint sensors.ISensor sensor;
+ optional incoming endpoint sensors.ISensorStore sensorStore;
+ 
+ incoming endpoint sensors.ISensorStoreConfiguration inSensorConfigurator; // from station
+}
+
+component storage.RAMStorage
+{
+    optional incoming endpoint storage.IStorage storage;
+}
+
+component sensors.SensorUpdater
+{
+    outgoing endpoint storage.IStorage storage;
+    outgoing endpoint sensors.ISensorStore sensorStore;    
+}
+
+architecture MobileWeatherApplication
+{
+    component gui.MWAUI ui1;
+    component mobilestation.MobileStation station1;
+    component sensors.GPSSensor gps1;
+    component sensors.TemperatureSensor temp1;
+    component sensors.SensorStore sensorStore1;
+    component sensors.SensorUpdater updater1;
+    component storage.RAMStorage ramStorage1;
+    
+    adapter sensors.GPSConnector gpsConnector1;
+    adapter sensors.TemperatureConnector tempConnector1;
+    
+    link station1.storage ramStorage1.storage;
+ 	link gps1.query gpsConnector1.gpsQuery;
+	link gpsConnector1.query sensorStore1.sensor;
+	 
+	link temp1.temperatureQuery tempConnector1.temperatureQuery;
+	link tempConnector1.sensorQuery sensorStore1.sensor;
+	
+	// Links to the sensor updater to the ramstorage
+	link updater1.sensorStore sensorStore1.sensorStore;
+	link updater1.storage ramStorage1.storage;
+	
+	// User interface links
+	link ui1.inUserInterface station1.outUserInterface;
+	link ui1.outListener station1.inListener;
+	
+	// sensor store configuration 
+	link sensorStore1.inSensorConfigurator station1.outSensorConfigurator;
+	
+	     
+	//-------------------------- component 2 -------------------------------
+	component mobilestation.MobileStation station2;
+    component sensors.GPSSensor gps2;
+    component sensors.TemperatureSensor temp2;
+    component sensors.SensorStore sensorStore2;
+    component sensors.SensorUpdater updater2;
+    component storage.RAMStorage ramStorage2;
+    component gui.MWAUI ui2;
+    adapter sensors.GPSConnector gpsConnector2;
+    adapter sensors.TemperatureConnector tempConnector2;
+    
+    link station2.storage ramStorage2.storage;
+    link gps2.query gpsConnector2.gpsQuery;
+    link gpsConnector2.query sensorStore2.sensor;
+     
+    link temp2.temperatureQuery tempConnector2.temperatureQuery;
+    link tempConnector2.sensorQuery sensorStore2.sensor;
+    
+    // Links to the sensor updater to the ramstorage
+    link updater2.sensorStore sensorStore2.sensorStore;
+    link updater2.storage ramStorage2.storage;
+	
+	// User interface links
+    link ui2.inUserInterface station2.outUserInterface;
+    link ui2.outListener station2.inListener;
+    
+    link sensorStore2.inSensorConfigurator station2.outSensorConfigurator;
+    
+    //-------------------------- component 3 -------------------------------
+    component gui.MWAUI ui3;
+    component mobilestation.MobileStation station3;
+    component sensors.GPSSensor gps3;
+    component sensors.TemperatureSensor temp3;
+    component sensors.SensorStore sensorStore3;
+    component sensors.SensorUpdater updater3;
+    component storage.RAMStorage ramStorage3;
+    
+    adapter sensors.GPSConnector gpsConnector3;
+    adapter sensors.TemperatureConnector tempConnector3;
+    
+    link station3.storage ramStorage3.storage;
+    link gps3.query gpsConnector3.gpsQuery;
+    link gpsConnector3.query sensorStore3.sensor;
+     
+    link temp3.temperatureQuery tempConnector3.temperatureQuery;
+    link tempConnector3.sensorQuery sensorStore3.sensor;
+    
+    // Links to the sensor updater to the ramstorage
+    link updater3.sensorStore sensorStore3.sensorStore;
+    link updater3.storage ramStorage3.storage;
+    
+    // User interface links
+    link ui3.inUserInterface station3.outUserInterface;
+    link ui3.outListener station3.inListener;
+    
+    // sensor store configuration 
+    link sensorStore3.inSensorConfigurator station3.outSensorConfigurator;
+    
+    // --------------------------- Gateway - ---------------------
+    adapter gateway.MobileStationGateway messageGateway;
+    link  messageGateway.grequester station1.sresponder;
+    link  messageGateway.gresponder station1.srequester;
+    
+    link  messageGateway.grequester station2.sresponder;
+    link  messageGateway.gresponder station2.srequester;
+
+    link  messageGateway.grequester station3.sresponder;
+    link  messageGateway.gresponder station3.srequester;
+  
+ 
+}

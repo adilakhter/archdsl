@@ -1,0 +1,153 @@
+module generate-java-common
+
+imports
+     libstratego-lib
+     libstratego-gpp
+     libstratego-aterm 
+     include/ArchDSL
+    
+rules
+    create-folder(|folder-name) =   <file-exists<+mkdir(|"w")> folder-name;<chdir>folder-name  
+    create-folder: 
+            folder-name -> None() 
+            with 
+                <file-exists<+mkdir(|"w")> folder-name 
+               ;<chdir>folder-name
+    head: [x |_] -> x 
+    
+    save-java-file:(fileName, fileContent) -> None()  
+            where
+                not(<eq>("", fileContent))
+            with  
+	            <debug(!"inside Save file > ")> (fileName, fileContent)
+	            ;handle := <fopen> (fileName, "w+")
+	            ;<fputs>(fileContent , handle)
+	            ;fclose
+
+	             
+    to-java-endpoints: 
+          EndPointDef(_,Incoming(),_,name) 
+          -> $[public static final IMyxName INTERFACE_NAME_INCOMING_[name] =  MyxUtils.createName("[name]");
+                                                     ]
+    to-java-endpoints: 
+          EndPointDef(_,Outgoing(),_,name) 
+          -> $[public static final IMyxName INTERFACE_NAME_OUTGOING_[name] =  MyxUtils.createName("[name]");
+                                                     ]
+      
+    to-java-endpoints: 
+          EndPointDef(_,Inout(),_,name) 
+          -> $[public static final IMyxName INTERFACE_NAME_INOUT_[name] =  MyxUtils.createName("[name]");
+                                                     ]
+    
+    to-java-endpoint-instances: 
+          EndPointDef(_,Incoming(),type,name) 
+          -> $[protected [type] [name]IncomingEndpointImplementation;
+              ]
+      
+    to-java-endpoint-instances: 
+          EndPointDef(is-required,Inout(),type,name) 
+          -> <concat-strings>[
+                                <to-java-endpoint-instances>EndPointDef(is-required,Incoming(),type,name)
+                               ,<to-java-endpoint-instances>EndPointDef(is-required,Outgoing(),type,name)
+                             ] 
+    to-java-endpoint-instances: 
+          EndPointDef(_,Outgoing(),type,name) 
+                    ->  $[protected ArrayList<[type]> [name]OutgoingEndpointImplementations;
+                         ]
+     
+    to-java-endpoint-instantiation-stmt: 
+         EndPointDef(_,Outgoing(), type , name )
+         ->$[this.[name]OutgoingEndpointImplementations = new ArrayList<[type]>(); 
+           ]                                                              
+      
+    to-java-endpoint-instantiation-stmt: 
+          EndPointDef(isRequired,Inout(), type , name ) 
+          -> <to-java-endpoint-instantiation-stmt>EndPointDef(isRequired,Outgoing(), type , name )
+     
+      
+    to-java-setup-incomingendpoints:
+          EndPointDef(_, Incoming() , type, name)
+          ->$[
+              this.[name]IncomingEndpointImplementation = get_[name]IncomingEndpointImplementation();
+              verifyIsNotNull("[name]IncomingEndpointImplementation" , [name]IncomingEndpointImplementation); 
+          	 ]
+      
+    to-java-setup-outgoingendpoints: 
+          EndPointDef(_,Outgoing(), type , name ) 
+          ->$[configureOutgoingEndpoint(INTERFACE_NAME_OUTGOING_[name], this.[name]OutgoingEndpointImplementations);  
+             ]
+    
+    
+    to-java-setup-incomingendpoints: 
+          EndPointDef(isRequired,Inout(), type , name ) 
+          -> <to-java-setup-incomingendpoints>EndPointDef(isRequired,Incoming(), type , name )
+           
+    to-java-setup-incomingendpoints: 
+          EndPointDef(isRequired,Inout(), type , name ) 
+          -> <to-java-setup-incomingendpoints>EndPointDef(isRequired,Incoming(), type , name )
+    
+    to-java-setup-gateway-endpoints :
+            EndPointDef(isRequired,Inout(), type , name )
+            -> <to-java-setup-incomingendpoints>EndPointDef(isRequired,Incoming(), type , name )
+            
+    to-java-setup-gateway-endpoints :
+            EndPointDef(isRequired,Incoming(), type , name )
+            -> <to-java-setup-incomingendpoints>EndPointDef(isRequired,Incoming(), type , name )
+            
+    to-java-abstractmethod-for-incoming-endpoint:
+          EndPointDef(_,Incoming(), type , name ) 
+          -> $[
+             /**
+              * Gets and initialises [name]IncomingEndpointImplementation endpoint's concrete implementation   
+              * so that it can be returned by the getServiceObject.
+              * By default [name]IncomingEndpointImplementation , which cause RuntimeException
+              * if not properly initialized. 
+              */
+              protected abstract [type] get_[name]IncomingEndpointImplementation();
+              ]
+   
+    to-java-abstractmethod-for-incoming-endpoint:
+          EndPointDef(isRequired,Inout(), type , name ) 
+          -> <to-java-abstractmethod-for-incoming-endpoint>EndPointDef(isRequired,Incoming(), type , name )        
+      
+      
+    to-java-concretemethod-for-incoming-endpoint:
+          EndPointDef(_,Incoming(), type , name ) 
+          -> $[
+               @Override
+               protected [type] get_[name]IncomingEndpointImplementation()
+               {
+			        //TODO return  end-point implementation for [type] as following:
+			        //return new <implementation of [name]IncomingEndpointImplementation implementing type [type]>();
+			        //Please note that : Uninitialized [name]IncomingEndpointImplementation results in a RuntimeException
+			        return null;
+              }
+              ]
+              
+    to-java-concretemethod-for-incoming-endpoint:
+          EndPointDef(isRequired,Inout(), type , name ) 
+          -> <to-java-concretemethod-for-incoming-endpoint>EndPointDef(isRequired,Incoming(), type , name )        
+      
+      
+    to-java-incomingendpoint-return-stmt: 
+          EndPointDef(_,Incoming(), _ , name )
+          -> $[
+              if(name.equals(INTERFACE_NAME_INCOMING_[name])){
+                if([name]IncomingEndpointImplementation == null){
+                    throw new RuntimeException("[name]IncomingEndpointImplementation is Null . Please initialize [name]_Impl with Service(/ServiceProxy) .");
+                }
+                return [name]IncomingEndpointImplementation;
+              } 
+              ]
+    to-java-incomingendpoint-return-stmt : 
+          EndPointDef(_,Inout(), _ , name ) -> 
+          $[
+              if(name.equals(INTERFACE_NAME_INOUT_[name])){
+                if([name]IncomingEndpointImplementation == null){
+                    throw new RuntimeException("[name]IncomingEndpointImplementation_Impl is Null . Please initialize [name]_Impl with Service(/ServiceProxy) .");
+                } 
+                return [name]IncomingEndpointImplementation;
+              } 
+           ]
+      
+            

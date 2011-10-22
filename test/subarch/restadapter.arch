@@ -1,0 +1,12 @@
+interface IMessageAdapter;
+
+component AdapterCore{
+	inout endpoint IMessageAdapter adapterOut;
+	
+}
+
+architecture restadapter {
+	component AdapterCore innerComp;
+	
+	incoming endpoint innerComp.adapterOut adpOut;
+}

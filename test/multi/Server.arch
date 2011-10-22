@@ -1,0 +1,19 @@
+interface IMessageParser;
+interface IMessageChannel;
+
+component MessageParser{
+	incoming endpoint IMessageParser messengerIn;
+}
+
+component MessageReceiver{
+	outgoing endpoint IMessageParser messengerOut;
+	incoming endpoint IMessageChannel messageIn;
+}
+
+architecture Server{
+	component MessageParser parser;
+	component MessageReceiver receiver;
+	
+	link parser.messengerIn receiver.messengerOut;
+	incoming endpoint receiver.messageIn exposedInterface;
+}

@@ -1,0 +1,29 @@
+Application(
+  [ InterfaceDef("IA", None())
+  , InterfaceDef("IB", None())
+  , ComponentDef(
+      "AObj"
+    , None()
+    , []
+    , [ EndPointDef(None(), Inout(), "IA", "a")
+      , EndPointDef(None(), Inout(), "IA", "a1")
+      , EndPointDef(None(), Inout(), "IA", "a2")
+      , EndPointDef(None(), Inout(), "IA", "a3")
+      ]
+    )
+  , ComponentDef(
+      "AObj2"
+    , None()
+    , []
+    , [ EndPointDef(None(), Inout(), "IA", "a")
+      , EndPointDef(None(), Inout(), "IA", "a1")
+      , EndPointDef(None(), Inout(), "IA", "a2")
+      , EndPointDef(None(), Inout(), "IA", "a3")
+      , EndPointDef(None(), Inout(), "IA", "a4")
+      , EndPointDef(None(), Inout(), "IA", "a5")
+      , EndPointDef(None(), Inout(), "IA", "a6")
+      , EndPointDef(None(), Inout(), "IA", "a8")
+      ]
+    )
+  ]
+)

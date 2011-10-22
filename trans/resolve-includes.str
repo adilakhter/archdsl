@@ -1,0 +1,35 @@
+module resolve-includes
+
+imports 
+	include/ArchDSL
+	lib/editor-common.generated
+	shared/path
+strategies
+
+  	build-include-file-list: path -> <base-filename; 
+      			   			 		  abspath; 
+      			   			 		  build-include-file-list(|<current-dir-posix>)
+      			  					 >path
+	
+	build-include-file-list(|baseDir): fileName -> <concat;
+							 		    			flatten-list;
+							 		    			make-set
+							 		   			   >[includesInThisFile, includesInOtherIncludes]
+		where includesInThisFile := <parse-file;
+									 get-include-fileNames;
+									 map(create-path(|baseDir))
+									>fileName;
+			  includesInOtherIncludes := <map(build-include-file-list(|<dirname>))>includesInThisFile	
+			  		  
+	get-include-fileNames: Application(imports*, _) -> 
+						   <map(get-include-fileNames)>imports*
+	get-include-fileNames: Include(fileName) -> 
+	                  	   fileName
+	                  	   
+	parse-single-include: fileName -> <create-path(|<current-dir-posix>);
+									   parse-file;
+									   get-single-include-arch
+									  >fileName
+									  
+    get-single-include-arch: Application(_, parts*) -> <filter(get-single-include-arch)>parts*
+    get-single-include-arch: arch@ArchitectureDef(_, _) -> arch

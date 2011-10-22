@@ -1,0 +1,118 @@
+module archdsl
+
+imports
+  libstratego-lib
+  libstratego-gpp
+  libstratego-aterm
+  include/ArchDSL
+  lib/editor-common.generated
+  check/check-definitions
+  generate-java
+  generate-xml
+  transform-namespace
+  transform-subarchitecture
+  transform-mergefiles
+  shared/path
+
+rules
+  // Analyzes the current program, returning a tuple with errors, warnings, and notes;
+  // each a list of (term, message) tuples or simply (message) terms.
+  editor-analyze:
+    (ast, path, project-path) -> (errors, warnings, notes)
+    with 
+        try(dr-scope-all-end);
+        dr-scope-all-start
+    with
+      editor-init
+      ;analyze-definitions
+      ;errors   := <concat>[<collect-all(constraint-error, conc)> ast,
+       						<collect-all(constraint-error-path(|path), conc)> ast]
+      ;<flatten-list>errors
+      ;warnings := <collect-all(constraint-warning, conc)> ast
+      ;notes    := <collect-all(constraint-note, conc)> ast
+      ;if not(![]; ?<flatten-list>errors) then  
+           rules ( get-errors := errors)
+       end
+       
+   
+   generate-subarch: (selected, position, ast, path, project-path) -> (<guarantee-extension(|"subarch")> path, <transform-mergefiles; transform-subarchitecture>selected)
+   
+   
+   // Generates Java and XML code if there is no Errors    
+   generate-all:
+    p@(selected, position, ast, path, project-path) ->  None()
+        where
+            // additional line needed to sync the errors ? todo : get rid of this line
+            // added just for on save.
+            // otherwise, if editor-analyze is not instantly invoked then get-errors is not retruning any errors
+            <debug(!"Phase1 : Compiling ... > ")>path
+            ;<editor-analyze> (ast, path, project-path) 
+            ;not(get-errors) <+ ([] := <flatten-list><get-errors>)
+        with 
+            try(dr-scope-all-end);
+            dr-scope-all-start
+        with
+            debug(!"Phase2 : Generating Artifacts... > ")
+            ;merged-code := <transform-mergefiles; transform-subarchitecture; debug(!"After subarch:")> p
+            ;root := <concat-strings>[project-path , "/", "generated-arch"]
+            ;<file-exists<+mkdir(|"w")> root
+            ;<chdir> root
+            ;<generate-java>(merged-code, position, ast, path, project-path)
+            ;<chdir> root
+            ;resXadl :=<declare-components; declare-adapters; xml> merged-code
+            ;folder-name :=<base-filename;remove-extension>path 
+            ;<file-exists<+mkdir(|"w")> folder-name
+            ;<chdir> folder-name
+            ;<save-xml-file>( <base-filename;guarantee-extension(|"xml")> path , resXadl)
+            ;<debug(!"Artifacts are generated sucessfully at ")> root
+    
+    save-xml-file:(fileName, fileContent) -> None()  
+            where
+                <debug(!"inside xml Save file > ")> (fileName, fileContent)
+                ;handle := <fopen> (fileName, "w+")
+                ;<fputs>(fileContent , handle)
+                ;fclose
+
+
+    // Generating the error message if there is any errors. Code generation is performed anymore.
+    generate-all:
+    (selected, position, ast, path, project-path) -> None()
+        where
+            <debug(!"Phase1 : Compiling ... > ")>path
+            ;<editor-analyze> (ast, path, project-path)
+            ;not([] := <flatten-list><get-errors>)
+        with 
+             errors := <get-errors>
+	        ;<debug(!"Compiling failed... > ")>path
+    		;<debug(!"Errors....... > ")>errors
+          
+  //Prints the abstract syntax ATerm of a selection.
+  generate-aterm:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+      filename := <guarantee-extension(|"aterm")> path;
+      result   := selected // we just return the input term
+ 
+  editor-resolve:
+    (Component(name, _), position, ast, path, project-path) -> target
+    where target := <GetComponentDef>name
+  
+  editor-resolve:
+    (Adapter(name, _), position, ast, path, project-path) -> target
+    where target := <GetAdapterDef>name
+  
+  editor-resolve:
+    (Adapter(name, _), position, ast, path, project-path) -> target
+    where target := <GetAdapterDef>name
+  
+  editor-resolve:
+    (Subarchitecture(name, _), position, ast, path, project-path) -> archDef
+    where archDef := <GetArchitectureDef>name
+    where  <create-path(|<current-dir-posix>); parse-file>archDef
+  
+  editor-resolve:
+    (Include(iName), position, ast, path, project-path) -> <create-path(|<current-dir-posix>);
+                                                            parse-file>iName
+  
+  editor-resolve = debug(!"Editor resolve: "); fail
+    

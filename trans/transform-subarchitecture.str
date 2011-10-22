@@ -1,0 +1,69 @@
+module transform-subarchitecture
+
+imports 
+	include/ArchDSL
+	transform-namespace
+	
+strategies
+
+  transform-subarchitecture:
+    (selected, position, ast, path, project-path) -> (filename, result-string)
+    with
+      filename := <guarantee-extension(|"subarch")> path;
+      result-string := <declare-archdef; declare-subarch; declare-archEP; find-subarch> selected
+    
+   transform-subarchitecture: app@Application(_, _) ->
+    						  <declare-archdef; declare-subarch; declare-archEP; find-subarch>app
+      
+    rules
+      declare-archdef = alltd(declare-getArchDef)
+      declare-getArchDef: arch@ArchitectureDef(name, _) -> arch
+  		with rules( GetArchDefinition: name -> arch )
+  	  
+  	  declare-subarch = alltd(declare-getSubArchDef)
+      declare-getSubArchDef: subarch@Subarchitecture(type, name) -> subarch
+  		with rules( GetSubArchDefinition: type -> subarch ) 
+  		with rules( GetSubArchDefinitionByName: name -> subarch)
+    	
+      declare-archEP = alltd(declare-getArchEP)
+      declare-getArchEP: ep@ArchEndpointDef(_, _, component, name) -> ep
+      	with rules (GetArchEP: name -> ep)
+    	
+	  find-subarch: Application(_, appParts*) ->
+	  				Application(None(), <concat; flatten-list>[other, archs])
+	  	where archs := <filter(find-subarch)>appParts*
+	  	where other := <filter(find-otherComponents)>appParts*
+	  find-subarch: ArchitectureDef(name, components*) ->
+	  			  	ArchitectureDef(name, <map(replace-subarch); flatten-list>components*)
+	  	where not (<GetSubArchDefinition>name)
+	  find-otherComponents: ArchitectureDef(_, _) -> 
+	  						[]
+	  find-otherComponents: otherDefinition ->
+	  						otherDefinition
+	  	//TODO: Check if otherDefinition is ArchDef
+	  				    
+	  replace-subarch: Subarchitecture(type, _) ->
+	  				   <subarch-do-replacement>type
+	  replace-subarch: Link(endpoint1, endpoint2) ->
+	  				   Link(<replace-subarch>endpoint1, <replace-subarch>endpoint2)
+	  replace-subarch: ep@EndPoint(type, name)	->
+	  				   <replace-subarch-link>ep
+	  	where (associatedArch := <GetSubArchDefinitionByName>type)
+	  replace-subarch: otherDefinition ->
+	  				   otherDefinition
+	  
+	  replace-subarch-link: EndPoint(type, name) -> 
+	  						<replace-subarch-link>ep 
+	  	where ep := <GetArchEP>name
+	  replace-subarch-link: ArchEndpointDef(_, _, ep, _) -> 
+	  						ep
+	  	
+	  	
+	  subarch-do-replacement: type -> <subarch-do-replacement>subArchDefinition
+	  	where subArchDefinition := <GetArchDefinition>type
+	  subarch-do-replacement: ArchitectureDef(_, components*) -> <map(subarch-do-replacement); flatten-list>components*
+	  subarch-do-replacement: ArchEndpointDef(_, _, _, _) ->
+	  						  []
+	  subarch-do-replacement: otherSubarchPart ->
+	  						  otherSubarchPart
+	  

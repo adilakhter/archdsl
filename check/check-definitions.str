@@ -1,0 +1,194 @@
+module check/check-definitions
+
+imports
+  libstratego-lib
+  include/ArchDSL
+  lib/editor-common.generated
+  shared/path
+  trans/resolve-includes
+  
+rules
+	analyze-definitions: t -> t
+		with <topdown(try(record-def))> t
+
+	record-def:c@ComponentDef(name, _, _,endpoints*) -> c
+  		with rules(
+  		        GetComponentDef :+ name -> name
+  		        get-link-direction(|obj,e) : name -> <filter(get-endpoint-direction(|obj,e))> endpoints*
+  		        get-endpoint(|obj, e): name -> <filter(get-endpoint-internal(|obj,e))> endpoints*
+  		    )
+  	
+  	get-endpoint-direction(|containerObject,endpointName) : EndPointDef(_, direction, _,endpointName)-> direction
+  	get-endpoint-direction(|containerObject,endpointName) : ArchEndpointDef(_, direction, _,endpointName)-> direction
+  	get-endpoint-internal(|containerObject,endpointName) :  epDef@EndPointDef(_, _, _,endpointName)-> epDef
+  	get-endpoint-internal(|containerObject,endpointName) :  archEpDef@ArchEndpointDef(_, _, _,endpointName)-> archEpDef
+  	
+  	record-def: a@AdapterDef(name, _, _, endpoints*) -> a
+  		with rules(
+  		        GetAdapterDef :+ name -> name
+  		        get-link-direction(|obj,e) : name -> <filter(get-endpoint-direction(|obj,e))> endpoints*
+                get-endpoint(|obj, e): name -> <filter(get-endpoint-internal(|obj,e))> endpoints*
+  		    )
+   record-def: i@Include(fileName) -> [i, resolvedArch]
+  		where <not (IsIncluded)>(fileName)
+  		//where < debug(!"Including following arch in the analysis: ")>(fileName) 
+  		//where <debug(!"resolved arch: ")><parse-single-include>fileName
+  		where resolvedArch := <parse-single-include>fileName
+  		with rules(		
+  			GetInclude :+ fileName -> i
+  			IsIncluded: fileName -> fileName
+  		)
+  
+  	record-def: i@InterfaceDef(name, _) -> i
+  		with rules(GetInterfaceDef :+ name -> name)
+  		
+  	record-def: a@ArchitectureDef(name, parts*) -> a
+  		with rules(
+  		        GetArchitectureDef :+ name -> name
+  		        get-link-direction(|obj,e) : name -> <filter(get-endpoint-direction(|obj,e))> parts*
+                get-endpoint(|obj, e): name -> <filter(get-endpoint-internal(|obj,e))> parts*
+  		    )
+      
+rules
+	require(s) = not(s)
+	//Multiple definitions (same type)
+	constraint-error: ComponentDef(name,_ , _,_) -> (name, $[Multiple definitions of the [name] component])
+    	where not(<bagof-GetComponentDef> name => [_])
+  	constraint-error: AdapterDef(name, _, _,_) -> (name, $[Multiple definitions of the [name] adapter])
+    	where not(<bagof-GetAdapterDef> name => [_])
+  	constraint-error: InterfaceDef(name, _) -> (name, $[Multiple definitions of the [name] interface])
+    	where not(<bagof-GetInterfaceDef> name => [_])
+  	constraint-error: ArchitectureDef(name, _) -> (name, $[Multiple definitions of the [name] architecture])
+    	where not(<bagof-GetArchitectureDef> name => [_])
+  	
+  	
+  	//Same name definitions (different types)
+  	constraint-error: ComponentDef(name, _, _,_) -> (name, $[There is at least one other adapter, interface or achitecture with the same name. Consider renaming])
+    	where not(<bagof-GetAdapterDef> name => []) <+ not(<bagof-GetInterfaceDef> name => []) <+ not(<bagof-GetArchitectureDef> name => [])
+  	constraint-error: AdapterDef(name, _, _,_) -> (name, $[There is at least one other component, interface or achitecture with the same name. Consider renaming])
+    	where not(<bagof-GetComponentDef> name => []) <+ not(<bagof-GetInterfaceDef> name => []) <+ not(<bagof-GetArchitectureDef> name => [])
+  	constraint-error: InterfaceDef(name, _) -> (name, $[There is at least one other component, adapter or achitecture with the same name. Consider renaming])
+    	where not(<bagof-GetComponentDef> name => []) <+ not(<bagof-GetAdapterDef> name => []) <+ not(<bagof-GetArchitectureDef> name => [])
+  	constraint-error: ArchitectureDef(name, _) -> (name, $[There is at least one other component, adapter or interface with the same name. Consider renaming])
+    	where not(<bagof-GetComponentDef> name => []) <+ not(<bagof-GetAdapterDef> name => []) <+ not(<bagof-GetInterfaceDef> name => [])
+  	
+  	
+  	//Undefined types
+  	constraint-error: Component(type, _) -> (type, $[Undefined component type, [type]])
+    	where (<bagof-GetComponentDef> type => [])
+  	constraint-error: Adapter(type, _) -> (type, $[Undefined adapter type, [type]])
+    	where (<bagof-GetAdapterDef> type => [])
+  	constraint-error: EndPointDef(_, _, type, _) -> (type, $[Undefined interface type, [type]])
+    	where (<bagof-GetInterfaceDef> type => [])
+  
+  
+    //Duplicate instance name
+    constraint-error: ComponentDef(name, _, _, endpoint*) -> <filter(constraint-error(|endpoint*))>endpoint*
+    constraint-error(|endpoint*): EndPointDef(_, _, _, name) -> (name, $[Multiple definitions of [name]])
+        where not(<filter(endpoint-by-name(|name))>endpoint* => [_])
+    
+    constraint-error: ArchitectureDef(name, parts*) -> <filter(constraint-error(|parts*))>parts*
+    // checking whether a component with same name is declared multiple times in an architecture
+    constraint-error(|parts*): Component(type, name) -> 
+    						  (name, $[Multiple definitions of [name]])
+    	where not (<filter(adapter-by-name(|name))>parts* => []) <+
+    		  not (<filter(component-by-name(|name))>parts* => [_])
+   			  
+    // checking whether an adapter with the same name is declared multiple times in an architecture
+    constraint-error(|parts*): Adapter(type, name) -> (name, $[Multiple definitions of [name]])
+   	 	where not (<filter(component-by-name(|name))>parts* => []) <+
+   			  not (<filter(adapter-by-name(|name))>parts* => [_])
+   	
+   	//TODO: Implement <pp>link		  
+   	//checking whether a link with same in and out endpoint is declared multiple times
+   	constraint-error(|parts*): lnk@Link(endpoint1 , endpoint2) 
+        -> (lnk, $[Multiple definitions of this link exist])
+        where   require(<filter(link-by-linkSignature(|endpoint1, endpoint2))>parts* => [_])    // verify atleast 1 link with the same signature is there
+        <+      require(<filter(link-by-linkSignature(|endpoint2 , endpoint1))>parts* => [])    // verify empty list 
+    
+    
+    // verify whether a link's endpoint exist
+    constraint-error(|parts*): lnk@Link(e1@EndPoint(instanceName, endpointName) , _)
+                                -> (e1, $["Invalid Link. Referring to non-existent subarchitecture/component/adapter."])
+    where require( <filter(get-type-name(|instanceName))>parts* => [_] )
+    
+    
+   constraint-error(|parts*): lnk@Link(_ , e2@EndPoint(instanceName, endpointName))
+                                -> (e2, $["Invalid Link. Referring to non-existent subarchitecture/component/adapter."])
+    where  require( <filter(get-type-name(|instanceName))>parts* => [_] )
+    
+    
+    
+    constraint-error(|parts*): lnk@Link(e1@EndPoint(instanceName, endpointName) , _)
+    -> (e1, $["Invalid Link. Referring to non-existent endpoint."])
+    //where  <debug(!"type : >>> ")> <filter(get-type-name(|instanceName))>parts*
+    where  [type] := <filter(get-type-name(|instanceName))>parts*
+    //where <debug(!"found endpoints : >>> ")><get-endpoint(|type, endpointName)>type 
+    where  foundEndpoints* := <get-endpoint(|type, endpointName)>type
+    where  <eq>(foundEndpoints* , [])
+    
+     constraint-error(|parts*): lnk@Link(_ , e2@EndPoint(instanceName, endpointName))
+    -> (e2, $["Invalid Link. Referring to non-existent endpoint."])
+    //where  <debug(!"type : >>> ")> <filter(get-type-name(|instanceName))>parts*
+    where  [type] := <filter(get-type-name(|instanceName))>parts*
+    //where <debug(!"found endpoints : >>> ")><get-endpoint(|type, endpointName)>type 
+    where  foundEndpoints* := <get-endpoint(|type, endpointName)>type
+    where  <eq>(foundEndpoints* , [])
+    
+    
+    //checking link direction consistency 
+    constraint-error(|parts*): lnk@Link(EndPoint(parentObject1, endpoint1) , EndPoint(parentObject2, endpoint2))
+    -> (lnk, $["Inconsistent Link Direction. The endpoints require to be atleast 'in' and 'out' direction."])
+    where  [type1] := <filter(get-type-name(|parentObject1))>parts*
+    where  [type2] := <filter(get-type-name(|parentObject2))>parts*
+    where   [direction1] := <get-link-direction(|type1, endpoint1)>type1
+    where   [direction2] := <get-link-direction(|type2, endpoint2)>type2
+    where  require(<eq>(direction1 , direction2) < (<eq>(direction1 , Inout()) <+ <eq>(direction2 , Inout())) + not(<eq>(direction1 , direction2))) 
+
+
+
+	//constraint-error: Subarchitecture(type, _) -> (type, "Subarchitecture not defined or included more than once. Did you forgot to write the full path?")
+	//	where <string-replace(|".", "/"); bagof-GetInclude>$["[type]"] => []
+
+	//checking imports existance
+	constraint-error: Include(fileName) ->
+  					  (fileName, $[File "[<create-fullpath-currentdir>fileName]" not found])
+  		where <create-fullpath-currentdir; not(file-exists)>fileName
+  		
+  	//check single arch def as fileName
+  	constraint-error-path(|fileName): ArchitectureDef(name, _) -> 
+  									  (name, $[Architecture name should be the same as the filename ([name])])
+    where <not(eq)>(<base-filename>fileName, $[[name].arch])	
+  	
+  		
+  	get-type-name(|instanceName) : Component(t, instanceName) -> t
+  	get-type-name(|instanceName) : Adapter(t, instanceName) -> t
+  	get-type-name(|instanceName) : Subarchitecture(t, instanceName) -> t
+  	
+  	component-by-name(|name): c@Component(_, name) -> c
+    adapter-by-name(|name): a@Adapter(_, name) -> a
+    endpoint-by-name(|name): e@EndPointDef(_, _, _, name) -> e
+    link-by-linkSignature(|endpoint1, endpoint2) : lnk@Link(endpoint1, endpoint2) -> lnk 
+    
+    constraint-warning: _ -> []
+  	//constraint-warning: Include(fileName) -> (fileName, $[[fileName] was included multiple times])
+  	//	where not(<bagof-GetInclude>fileName => [_])
+  	constraint-note: _ -> []
+  	
+    constraint-error(|parts*): ArchEndpointDef(_, direction, e2@EndPoint(instanceName, endpointName), _)
+                                -> (e2, $["Invalid Link. Referring to non-existent component/adapter."])
+    where  require( <filter(get-type-name(|instanceName))>parts* => [_] )
+    
+    
+    constraint-error(|parts*): ArchEndpointDef(_, direction, a1@EndPoint(instanceName, endpointName), _)
+    -> (a1, $["Invalid Link. Referring to non-existent endpoint."])
+    where  [type] := <filter(get-type-name(|instanceName))>parts*
+    where  foundEndpoints* := <get-endpoint(|type, endpointName)>type
+    where  <eq>(foundEndpoints* , [])
+    
+    constraint-error(|parts*): a1@ArchEndpointDef(_, direction, EndPoint(instanceName, endpointName), _)
+    -> (a1, $["Inconsistent Link Direction."])
+    where  [type] := <filter(get-type-name(|instanceName))>parts*
+    where   [direction1] := <get-link-direction(|type, endpointName)>type
+    where   [direction2] := [direction]
+    where  require(<eq>(direction1 , direction2) <+ (<eq>(direction1 , Inout())))

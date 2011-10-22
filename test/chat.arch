@@ -1,0 +1,48 @@
+interface IChat;
+interface IChatEv;
+
+component server.ChatServer
+{
+    incoming endpoint IChat chat;
+    outgoing endpoint IChatEv out;
+}
+adapter gateway.ChatAdapter
+{
+       outgoing endpoint IChat chat;
+       incoming endpoint IChatEv in;
+}
+
+component client.ChatClient
+{
+    outgoing endpoint IChat chat;
+    incoming endpoint IChatEv in;
+}
+
+architecture chat
+{   
+    
+    component server.ChatServer server;
+    component client.ChatClient client1;
+    component client.ChatClient client2;
+    component client.ChatClient client3;
+    
+    adapter  gateway.ChatAdapter adapter1;
+    adapter  gateway.ChatAdapter adapter2;
+    adapter  gateway.ChatAdapter adapter3;
+        
+    link server.chat client1.chat;
+    link server.chat client2.chat;
+    link server.chat client3.chat;
+    
+    link server.out client1.in;
+    link server.out client2.in;
+    link server.out client3.in;
+    
+    link server.chat adapter1.chat;
+    link server.chat adapter2.chat;
+    link server.chat adapter3.chat;
+    
+   link server.out adapter1.in; 
+    link server.out adapter2.in;
+    link server.out adapter3.in;
+}

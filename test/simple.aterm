@@ -1,0 +1,25 @@
+Application(
+  []
+, [ InterfaceDef("IIncoming", None())
+  , InterfaceDef("IOutgoing", None())
+  , ComponentDef(
+      "A"
+    , None()
+    , []
+    , [EndPointDef(None(), Incoming(), "IIncoming", "in")]
+    )
+  , ComponentDef(
+      "B"
+    , None()
+    , []
+    , [EndPointDef(None(), Outgoing(), "IOutgoing", "out")]
+    )
+  , ArchitectureDef(
+      "simple"
+    , [ Component("A", "server")
+      , Component("B", "client")
+      , Link(EndPoint("server", "in"), EndPoint("client", "out"))
+      ]
+    )
+  ]
+)

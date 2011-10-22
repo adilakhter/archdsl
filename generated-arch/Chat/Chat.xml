@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?> 
+<instance:xArch 
+	xmlns:instance="http://www.ics.uci.edu/pub/arch/xArch/instance.xsd" 
+	xmlns:implementation="http://www.ics.uci.edu/pub/arch/xArch/implementation.xsd" 
+	xmlns:javaimplementation="http://www.ics.uci.edu/pub/arch/xArch/javaimplementation.xsd" 
+	xmlns:javainitparams="http://www.ics.uci.edu/pub/arch/xArch/javainitparams.xsd" 
+	xmlns:lookupimplementation="http://www.ics.uci.edu/pub/arch/xArch/lookupimplementation.xsd" 
+	xmlns:types="http://www.ics.uci.edu/pub/arch/xArch/types.xsd" 
+	xmlns:xlink="http://www.w3.org/1999/xlink" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.ics.uci.edu/pub/arch/xArch/instance.xsd http://www.isr.uci.edu/projects/xarchuci/core/instance.xsd http://www.isr.uci.edu/projects/xarchuci/ext/activitydiagrams.xsd http://www.ics.uci.edu/pub/arch/xArch/changesets.xsd http://www.isr.uci.edu/projects/xarchuci/ext/changesets.xsd http://www.ics.uci.edu/pub/arch/xArch/analysis.xsd http://www.ics.uci.edu/pub/arch/xArch/lookupimplementation.xsd http://www.isr.uci.edu/projects/xarchuci/ext/lookupimplementation.xsd http://www.ics.uci.edu/pub/arch/xArch/javainitparams.xsd http://www.isr.uci.edu/projects/xarchuci/ext/javainitparams.xsd http://www.ics.uci.edu/pub/arch/xArch/javaimplementation.xsd http://www.isr.uci.edu/projects/xarchuci/ext/javaimplementation.xsd http://www.ics.uci.edu/pub/arch/xArch/implementation.xsd http://www.isr.uci.edu/projects/xarchuci/ext/implementation.xsd http://www.ics.uci.edu/pub/arch/xArch/variants.xsd http://www.isr.uci.edu/projects/xarchuci/ext/variants.xsd http://www.ics.uci.edu/pub/arch/xArch/statecharts.xsd http://www.isr.uci.edu/projects/xarchuci/ext/statecharts.xsd http://www.ics.uci.edu/pub/arch/xArch/types.xsd http://www.isr.uci.edu/projects/xarchuci/ext/types.xsd">
+	<types:archTypes xsi:type="types:ArchTypes"><types:interfaceType types:id="interface-IMessageChannelClient" xsi:type="implementation:InterfaceTypeImpl">
+	                                            	<types:description xsi:type="instance:Description">IMessageChannelClient</types:description>
+	                                            	<implementation:implementation xsi:type="javaimplementation:JavaImplementation">
+	                                            		<javaimplementation:mainClass xsi:type="javaimplementation:JavaClassFile">
+	                                            			<javaimplementation:javaClassName xsi:type="javaimplementation:JavaClassName">Chat.IMessageChannelClient</javaimplementation:javaClassName> 
+	                                            		</javaimplementation:mainClass>
+	                                            	</implementation:implementation> 
+	                                            </types:interfaceType><types:componentType types:id="component-Client" xsi:type="implementation:VariantComponentTypeImpl">
+	                                            	<types:description xsi:type="instance:Description">Client</types:description>
+	                                            	<implementation:implementation xsi:type="javaimplementation:JavaImplementation">
+	                                            		<javaimplementation:mainClass xsi:type="javaimplementation:JavaClassFile">
+	                                            			<javaimplementation:javaClassName xsi:type="javaimplementation:JavaClassName">Chat.Client</javaimplementation:javaClassName>
+	                                            			 
+	                                            		</javaimplementation:mainClass>
+	                                            	</implementation:implementation>
+	                                            	<types:signature types:id="signature-Client-out" xsi:type="implementation:SignatureImpl">
+	                                            		<types:description xsi:type="instance:Description">out</types:description>
+	                                            		<types:direction xsi:type="instance:Direction">out</types:direction>
+	                                            		<implementation:implementation xsi:type="lookupimplementation:LookupImplementation">
+	                                            			<lookupimplementation:name xsi:type="lookupimplementation:LookupName">out</lookupimplementation:name> 
+	                                            		</implementation:implementation>
+	                                            		<types:type xlink:href="#interface-IMessageChannelClient" xlink:type="simple" xsi:type="instance:XMLLink" />
+	                                            	</types:signature>
+	                                            </types:componentType><types:interfaceType types:id="interface-Server.IMessageParser" xsi:type="implementation:InterfaceTypeImpl">
+	                                            	<types:description xsi:type="instance:Description">Server.IMessageParser</types:description>
+	                                            	<implementation:implementation xsi:type="javaimplementation:JavaImplementation">
+	                                            		<javaimplementation:mainClass xsi:type="javaimplementation:JavaClassFile">
+	                                            			<javaimplementation:javaClassName xsi:type="javaimplementation:JavaClassName">Server.IMessageParser</javaimplementation:javaClassName> 
+	                                            		</javaimplementation:mainClass>
+	                                            	</implementation:implementation> 
+	                                            </types:interfaceType><types:interfaceType types:id="interface-Server.IMessageChannel" xsi:type="implementation:InterfaceTypeImpl">
+	                                            	<types:description xsi:type="instance:Description">Server.IMessageChannel</types:description>
+	                                            	<implementation:implementation xsi:type="javaimplementation:JavaImplementation">
+	                                            		<javaimplementation:mainClass xsi:type="javaimplementation:JavaClassFile">
+	                                            			<javaimplementation:javaClassName xsi:type="javaimplementation:JavaClassName">Server.IMessageChannel</javaimplementation:javaClassName> 
+	                                            		</javaimplementation:mainClass>
+	                                            	</implementation:implementation> 
+	                                            </types:interfaceType><types:componentType types:id="component-Server.MessageParser" xsi:type="implementation:VariantComponentTypeImpl">
+	                                            	<types:description xsi:type="instance:Description">Server.MessageParser</types:description>
+	                                            	<implementation:implementation xsi:type="javaimplementation:JavaImplementation">
+	                                            		<javaimplementation:mainClass xsi:type="javaimplementation:JavaClassFile">
+	                                            			<javaimplementation:javaClassName xsi:type="javaimplementation:JavaClassName">Server.MessageParser</javaimplementation:javaClassName>
+	                                            			 
+	                                            		</javaimplementation:mainClass>
+	                                            	</implementation:implementation>
+	                                            	<types:signature types:id="signature-Server.MessageParser-messengerIn" xsi:type="implementation:SignatureImpl">
+	                                            		<types:description xsi:type="instance:Description">messengerIn</types:description>
+	                                            		<types:direction xsi:type="instance:Direction">in</types:direction>
+	                                            		<implementation:implementation xsi:type="lookupimplementation:LookupImplementation">
+	                                            			<lookupimplementation:name xsi:type="lookupimplementation:LookupName">messengerIn</lookupimplementation:name> 
+	                                            		</implementation:implementation>
+	                                            		<types:type xlink:href="#interface-Server.IMessageParser" xlink:type="simple" xsi:type="instance:XMLLink" />
+	                                            	</types:signature>
+	                                            </types:componentType><types:componentType types:id="component-Server.MessageReceiver" xsi:type="implementation:VariantComponentTypeImpl">
+	                                            	<types:description xsi:type="instance:Description">Server.MessageReceiver</types:description>
+	                                            	<implementation:implementation xsi:type="javaimplementation:JavaImplementation">
+	                                            		<javaimplementation:mainClass xsi:type="javaimplementation:JavaClassFile">
+	                                            			<javaimplementation:javaClassName xsi:type="javaimplementation:JavaClassName">Server.MessageReceiver</javaimplementation:javaClassName>
+	                                            			 
+	                                            		</javaimplementation:mainClass>
+	                                            	</implementation:implementation>
+	                                            	<types:signature types:id="signature-Server.MessageReceiver-messengerOut" xsi:type="implementation:SignatureImpl">
+	                                            		<types:description xsi:type="instance:Description">messengerOut</types:description>
+	                                            		<types:direction xsi:type="instance:Direction">out</types:direction>
+	                                            		<implementation:implementation xsi:type="lookupimplementation:LookupImplementation">
+	                                            			<lookupimplementation:name xsi:type="lookupimplementation:LookupName">messengerOut</lookupimplementation:name> 
+	                                            		</implementation:implementation>
+	                                            		<types:type xlink:href="#interface-Server.IMessageParser" xlink:type="simple" xsi:type="instance:XMLLink" />
+	                                            	</types:signature><types:signature types:id="signature-Server.MessageReceiver-messageIn" xsi:type="implementation:SignatureImpl">
+	                                            		<types:description xsi:type="instance:Description">messageIn</types:description>
+	                                            		<types:direction xsi:type="instance:Direction">in</types:direction>
+	                                            		<implementation:implementation xsi:type="lookupimplementation:LookupImplementation">
+	                                            			<lookupimplementation:name xsi:type="lookupimplementation:LookupName">messageIn</lookupimplementation:name> 
+	                                            		</implementation:implementation>
+	                                            		<types:type xlink:href="#interface-Server.IMessageChannel" xlink:type="simple" xsi:type="instance:XMLLink" />
+	                                            	</types:signature>
+	                                            </types:componentType></types:archTypes>
+	<types:archStructure types:id="arch-Chat" xsi:type="types:ArchStructure">
+		<types:description xsi:type="instance:Description">Chat</types:description>
+		<types:component types:id="Chat-parser" xsi:type="types:Component">
+			<types:description xsi:type="instance:Description">parser</types:description>
+			<types:type xlink:href="#component-Server.MessageParser" xlink:type="simple" xsi:type="instance:XMLLink" />
+			<types:interface types:id="interface-Chat-parser-messengerIn" xsi:type="types:Interface">
+				<types:description xsi:type="instance:Description">messengerIn</types:description>
+				<types:direction xsi:type="instance:Direction">in</types:direction>
+				<types:type xlink:href="#interface-Server.IMessageParser" xlink:type="simple" xsi:type="instance:XMLLink" />
+				<types:signature xlink:href="#signature-Server.MessageParser-messengerIn" xlink:type="simple" xsi:type="instance:XMLLink" />
+			</types:interface>
+		</types:component><types:component types:id="Chat-receiver" xsi:type="types:Component">
+			<types:description xsi:type="instance:Description">receiver</types:description>
+			<types:type xlink:href="#component-Server.MessageReceiver" xlink:type="simple" xsi:type="instance:XMLLink" />
+			<types:interface types:id="interface-Chat-receiver-messengerOut" xsi:type="types:Interface">
+				<types:description xsi:type="instance:Description">messengerOut</types:description>
+				<types:direction xsi:type="instance:Direction">out</types:direction>
+				<types:type xlink:href="#interface-Server.IMessageParser" xlink:type="simple" xsi:type="instance:XMLLink" />
+				<types:signature xlink:href="#signature-Server.MessageReceiver-messengerOut" xlink:type="simple" xsi:type="instance:XMLLink" />
+			</types:interface><types:interface types:id="interface-Chat-receiver-messageIn" xsi:type="types:Interface">
+				<types:description xsi:type="instance:Description">messageIn</types:description>
+				<types:direction xsi:type="instance:Direction">in</types:direction>
+				<types:type xlink:href="#interface-Server.IMessageChannel" xlink:type="simple" xsi:type="instance:XMLLink" />
+				<types:signature xlink:href="#signature-Server.MessageReceiver-messageIn" xlink:type="simple" xsi:type="instance:XMLLink" />
+			</types:interface>
+		</types:component><types:component types:id="Chat-client1" xsi:type="types:Component">
+			<types:description xsi:type="instance:Description">client1</types:description>
+			<types:type xlink:href="#component-Client" xlink:type="simple" xsi:type="instance:XMLLink" />
+			<types:interface types:id="interface-Chat-client1-out" xsi:type="types:Interface">
+				<types:description xsi:type="instance:Description">out</types:description>
+				<types:direction xsi:type="instance:Direction">out</types:direction>
+				<types:type xlink:href="#interface-IMessageChannelClient" xlink:type="simple" xsi:type="instance:XMLLink" />
+				<types:signature xlink:href="#signature-Client-out" xlink:type="simple" xsi:type="instance:XMLLink" />
+			</types:interface>
+		</types:component><types:component types:id="Chat-client2" xsi:type="types:Component">
+			<types:description xsi:type="instance:Description">client2</types:description>
+			<types:type xlink:href="#component-Client" xlink:type="simple" xsi:type="instance:XMLLink" />
+			<types:interface types:id="interface-Chat-client2-out" xsi:type="types:Interface">
+				<types:description xsi:type="instance:Description">out</types:description>
+				<types:direction xsi:type="instance:Direction">out</types:direction>
+				<types:type xlink:href="#interface-IMessageChannelClient" xlink:type="simple" xsi:type="instance:XMLLink" />
+				<types:signature xlink:href="#signature-Client-out" xlink:type="simple" xsi:type="instance:XMLLink" />
+			</types:interface>
+		</types:component>
+		
+		<types:link types:id="link-Chat-parser-messengerIn-receiver-messengerOut" xsi:type="types:Link">
+			<types:description xsi:type="instance:Description">parser-messengerIn-receiver-messengerOut</types:description>
+			<types:point xsi:type="instance:Point">
+			<instance:anchorOnInterface xlink:href="#interface-Chat-parser-messengerIn" xlink:type="simple" xsi:type="instance:XMLLink" /> 
+			</types:point>
+			<types:point xsi:type="instance:Point">
+			<instance:anchorOnInterface xlink:href="#interface-Chat-receiver-messengerOut" xlink:type="simple" xsi:type="instance:XMLLink" /> 
+			</types:point>
+		</types:link><types:link types:id="link-Chat-receiver-messageIn-client1-out" xsi:type="types:Link">
+			<types:description xsi:type="instance:Description">receiver-messageIn-client1-out</types:description>
+			<types:point xsi:type="instance:Point">
+			<instance:anchorOnInterface xlink:href="#interface-Chat-receiver-messageIn" xlink:type="simple" xsi:type="instance:XMLLink" /> 
+			</types:point>
+			<types:point xsi:type="instance:Point">
+			<instance:anchorOnInterface xlink:href="#interface-Chat-client1-out" xlink:type="simple" xsi:type="instance:XMLLink" /> 
+			</types:point>
+		</types:link><types:link types:id="link-Chat-receiver-messageIn-client2-out" xsi:type="types:Link">
+			<types:description xsi:type="instance:Description">receiver-messageIn-client2-out</types:description>
+			<types:point xsi:type="instance:Point">
+			<instance:anchorOnInterface xlink:href="#interface-Chat-receiver-messageIn" xlink:type="simple" xsi:type="instance:XMLLink" /> 
+			</types:point>
+			<types:point xsi:type="instance:Point">
+			<instance:anchorOnInterface xlink:href="#interface-Chat-client2-out" xlink:type="simple" xsi:type="instance:XMLLink" /> 
+			</types:point>
+		</types:link>
+	</types:archStructure>
+</instance:xArch>

@@ -1,0 +1,17 @@
+include "Server";
+interface IMessageChannelClient;
+
+component Client 
+{
+    outgoing endpoint IMessageChannelClient out;
+}
+
+architecture Chat
+{
+    subarchitecture Server server;
+    component Client client1;
+    component Client client2;
+    
+    link server.exposedInterface client1.out;
+    link server.exposedInterface client2.out;
+}

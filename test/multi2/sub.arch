@@ -1,0 +1,7 @@
+component Component2{
+	
+}
+
+architecture sub{
+	component Component2 comp2;
+}

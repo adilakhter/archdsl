@@ -1,0 +1,7 @@
+component Component4{
+	
+}
+
+architecture sub3{
+	component Component4 comp4;
+}

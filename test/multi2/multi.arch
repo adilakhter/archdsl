@@ -1,0 +1,17 @@
+include "sub";
+include "secondlevel/sub2";
+include "secondlevel/subsub2";
+include "secondlevel/thirdlevel/sub3";
+
+component Component1{
+	
+} 
+
+architecture multi{
+	component Component1 blabla;
+	
+	subarchitecture secondlevel.sub2 subarch2;
+	subarchitecture sub subarch;
+	subarchitecture secondlevel.subsub2 blabla2;
+	subarchitecture secondlevel.thirdlevel.sub3 blabla3;
+}

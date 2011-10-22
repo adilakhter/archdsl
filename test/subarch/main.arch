@@ -1,0 +1,41 @@
+include "core";
+include "restadapter";
+
+interface IMessageDispatcher;
+interface IMessageAdapter;
+
+component MessageDispatcher{
+	outgoing endpoint IMessageDispatcher disp;
+}
+
+component MessageAdapter 
+{
+	incoming endpoint IMessageAdapter adapterIn;
+	outgoing endpoint IMessageAdapter adapterOut;
+}
+
+architecture main {
+	component MessageDispatcher msgDisp;
+	component MessageAdapter adapter;
+	
+	subarchitecture core coreComp;
+	subarchitecture restadapter restAdapter1;
+	
+	// Actual valid link 
+	link coreComp.messages  msgDisp.disp;
+	
+	//-Example 1: Wrong sub-architecture name
+	//link coreComp1.messages  msgDisp.disp;
+	//link msgDisp.disp coreComp1.messages ;
+	
+	// --Example 2: Wrong sub-architecture link  name
+    //link coreComp.messages1  msgDisp.disp;
+    //link msgDisp.disp coreComp.messages1;
+    
+    // ---Example 3 : Duplicate Link 
+    //link coreComp.messages  msgDisp.disp;
+    //link msgDisp.disp coreComp.messages;
+    
+    link restAdapter1.adpOut adapter.adapterOut;
+    
+}

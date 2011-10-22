@@ -1,0 +1,24 @@
+module path
+
+rules
+	path-to-namespace: path -> <ltrim-chars(?'.')>$[[
+					   <string-replace(|$[[<current-dir-posix>]/], "");
+					    dirname;
+					    ltrim-chars(?'/');
+					    ltrim-chars(?'.');
+					    string-replace(|"/", ".")>
+					   path].]
+	
+	
+	current-dir-posix: _ ->
+					   <getcwd; string-replace(|"\\", "/")>
+	
+	create-fullpath-currentdir: path -> 
+								$[[<getcwd>]/[<remove-quotes>path].arch]
+	
+	create-path(|path): fileName ->
+						$[[path]/[<remove-quotes>fileName].arch]
+	
+	remove-quotes: string ->
+    			   <string-tokenize(|['"']); last>string
+    			
